@@ -26,6 +26,28 @@ func GetAllDams(d database.Database) echo.HandlerFunc {
 	}
 }
 
+func GetDamById(d database.Database) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		res := &models.Response{}
+		id, err := strconv.Atoi(c.Param("id"))
+
+		if err != nil {
+			res.Message = err.Error()
+			return c.JSON(http.StatusBadRequest, res)
+		}
+
+		dam, err := d.GetDamById(c.Request().Context(), id)
+		if err != nil {
+			res.Message = err.Error()
+			return c.JSON(http.StatusInternalServerError, res)
+		}
+
+		res.Message = "successful"
+		res.Data = dam
+		return c.JSON(http.StatusOK, res)
+	}
+}
+
 func CreateDam(d database.Database) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		res := &models.Response{}

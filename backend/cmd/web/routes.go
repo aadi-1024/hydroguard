@@ -14,9 +14,13 @@ func SetupRoutes(e *echo.Echo) {
 		return c.String(http.StatusOK, "pong")
 	})
 
+	e.POST("/login", handlers.LoginUser(app.db))
+	e.POST("/reset", nil)
+
 	dam := e.Group("/dam")
 	dam.POST("", handlers.CreateDam(app.db))
 	dam.GET("/cover/:id", handlers.GetWaterCoverArea(app.db))
 	dam.GET("", handlers.GetAllDams(app.db))
+	dam.GET("/:id", handlers.GetDamById(app.db))
 	dam.PUT("", handlers.UpdateDam(app.db))
 }
