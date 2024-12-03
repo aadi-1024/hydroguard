@@ -9,7 +9,7 @@ type Dam struct {
 	Longitude       float32        `json:"longitude"`
 	Status          string         `json:"status"`
 	LastMaintenance time.Time      `json:"last_maintenance"`
-	Analysis        []Analysis     `json:"analysis,omitempty"`
+	WaterCover      float32        `json:"water_cover" gorm:"default:null"`
 	Notifications   []Notification `json:"notifications,omitempty"`
 	Coordinates     []Coordinate   `json:"coordinates,omitempty"`
 }

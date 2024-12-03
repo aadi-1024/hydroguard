@@ -47,6 +47,28 @@ func CreateDam(d database.Database) echo.HandlerFunc {
 	}
 }
 
+func UpdateDam(d database.Database) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		res := &models.Response{}
+		dam := models.Dam{}
+
+		if err := c.Bind(&dam); err != nil {
+			res.Message = err.Error()
+			return c.JSON(http.StatusBadRequest, res)
+		}
+
+		ret, err := d.UpdateDam(c.Request().Context(), dam)
+		if err != nil {
+			res.Message = err.Error()
+			return c.JSON(http.StatusInternalServerError, res)
+		}
+
+		res.Message = "successful"
+		res.Data = ret
+		return c.JSON(http.StatusOK, res)
+	}
+}
+
 func GetWaterCoverArea(d database.Database) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		res := &models.Response{}
