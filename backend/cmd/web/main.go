@@ -18,7 +18,12 @@ func main() {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
+	cache, err := database.InitCache("127.0.0.1:11211")
+	if err != nil {
+		log.Fatal(err.Error())
+	}
 
+	app.cache = cache
 	app.db = db
 	SetupRoutes(e)
 

@@ -9,3 +9,9 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=password
       - POSTGRES_DB=hydroguard
+  cache:
+    image: memcached:alpine
+    command:
+      - --memory-limit=128
+    ports:
+      - 11211:11211

@@ -13,15 +13,6 @@ func (d *Database) CreateUser(ctx context.Context, user models.User) (models.Use
 	return user, err
 }
 
-func (d *Database) GetUserById(ctx context.Context, id int) (models.User, error) {
-	ctx, cancel := d.Ctx(ctx)
-	defer cancel()
-
-	user := models.User{Id: id}
-	err := d.conn.WithContext(ctx).First(&user).Error
-	return user, err
-}
-
 func (d *Database) GetUserByEmail(ctx context.Context, email string) (models.User, error) {
 	ctx, cancel := d.Ctx(ctx)
 	defer cancel()
