@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/bradfitz/gomemcache/memcache"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/labstack/echo/v4"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
@@ -69,10 +70,17 @@ func LoginUser(d database.Database) echo.HandlerFunc {
 			return c.JSON(http.StatusUnauthorized, res)
 		}
 
+		clms := &models.Claims{}
+		clms.Email = user.Email
+		clms.ExpiresAt = jwt.NewNumericDate(time.Now().Add(30 * 24 * time.Hour))
+		clms.Issuer = "hydroguard"
+
+		token := jwt.NewWithClaims(jwt.SigningMethodHS512, clms)
+		tkn, _ := token.SignedString([]byte("HUGE_SECRET"))
+
 		cookie := http.Cookie{
-			Name: "jwt",
-			//TODO: replace with jwt token
-			Value:    "abcd",
+			Name:     "jwt",
+			Value:    tkn,
 			Secure:   false,
 			HttpOnly: true,
 			Expires:  time.Now().Add(30 * 24 * time.Hour),
