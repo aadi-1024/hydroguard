@@ -16,8 +16,8 @@ func SetupRoutes(e *echo.Echo) {
 
 	e.POST("/login", handlers.LoginUser(app.db))
 	e.POST("/register", handlers.CreateUser(app.db))
-	e.POST("/reset/request", handlers.ResetPasswordRequestOTP(app.db, app.cache))
-	e.POST("/reset/verify", handlers.ResetPasswordVerify(app.db, app.cache))
+	e.POST("/reset/request", handlers.ResetPasswordRequestOTP(app.db, app.cache, app.mailer))
+	e.POST("/reset/verify", handlers.ResetPasswordVerify(app.db, app.cache, app.mailer))
 
 	dam := e.Group("/dam")
 	dam.POST("", handlers.CreateDam(app.db))
