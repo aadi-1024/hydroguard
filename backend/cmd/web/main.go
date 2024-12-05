@@ -1,10 +1,13 @@
 package main
 
 import (
+	"fmt"
 	"hydroguard/internal/database"
 	"log"
+	"os"
 	"time"
 
+	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
 )
 
@@ -14,7 +17,9 @@ func main() {
 	app = &App{}
 	e := echo.New()
 
-	db, err := database.InitDB("postgres://postgres:password@localhost:5432/hydroguard", 3*time.Second)
+	godotenv.Load("../.env")
+
+	db, err := database.InitDB(fmt.Sprintf("postgres://%s:%s@localhost:%s/%s", os.Getenv("POSTGRES_USER"), os.Getenv("POSTGRES_PASSWORD"), os.Getenv("POSTGRES_PORT"), os.Getenv("POSTGRES_DB")), 3*time.Second)
 	if err != nil {
 		log.Fatal(err.Error())
 	}
