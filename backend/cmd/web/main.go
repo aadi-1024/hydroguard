@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"hydroguard/internal/database"
+	"hydroguard/internal/mailer"
 	"log"
 	"os"
 	"time"
@@ -27,9 +28,14 @@ func main() {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
+	mailer, err := mailer.InitMailer()
+	if err != nil {
+		log.Fatal(err.Error())
+	}
 
 	app.cache = cache
 	app.db = db
+	app.mailer = mailer
 	SetupRoutes(e)
 
 	if err := e.Start("0.0.0.0:8080"); err != nil {

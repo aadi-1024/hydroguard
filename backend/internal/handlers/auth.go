@@ -1,7 +1,9 @@
 package handlers
 
 import (
+	"fmt"
 	"hydroguard/internal/database"
+	"hydroguard/internal/mailer"
 	"hydroguard/internal/models"
 	"log"
 	"math/rand/v2"
@@ -93,7 +95,7 @@ func LoginUser(d database.Database) echo.HandlerFunc {
 	}
 }
 
-func ResetPasswordRequestOTP(d database.Database, cache database.Cache) echo.HandlerFunc {
+func ResetPasswordRequestOTP(d database.Database, cache database.Cache, mailer mailer.Mailer) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		res := &models.Response{}
 		user := models.User{}
@@ -103,7 +105,7 @@ func ResetPasswordRequestOTP(d database.Database, cache database.Cache) echo.Han
 			return c.JSON(http.StatusBadRequest, res)
 		}
 
-		_, err := d.GetUserByEmail(c.Request().Context(), user.Email)
+		actualUser, err := d.GetUserByEmail(c.Request().Context(), user.Email)
 		if err == gorm.ErrRecordNotFound {
 			res.Message = "user not found"
 			return c.JSON(http.StatusNotFound, res)
@@ -114,7 +116,16 @@ func ResetPasswordRequestOTP(d database.Database, cache database.Cache) echo.Han
 
 		//100,000 to 999,999
 		otp := rand.IntN(900_000) + 100_000
-		log.Println(otp)
+		mail := models.Mail{
+			From:    "admin@hydroguard.com",
+			To:      user.Email,
+			Subject: "Password reset OTP",
+			Content: fmt.Sprintf("Hello %s!\n\nYour OTP is <b>%s</b>\n\nValid for 5 minutes\n", actualUser.Name, strconv.Itoa(otp)),
+		}
+		if err := mailer.SendMail(c.Request().Context(), mail); err != nil {
+			res.Message = err.Error()
+			return c.JSON(http.StatusInternalServerError, res)
+		}
 
 		item := memcache.Item{
 			Key:        user.Email,
@@ -135,7 +146,7 @@ func ResetPasswordRequestOTP(d database.Database, cache database.Cache) echo.Han
 	}
 }
 
-func ResetPasswordVerify(d database.Database, cache database.Cache) echo.HandlerFunc {
+func ResetPasswordVerify(d database.Database, cache database.Cache, mailer mailer.Mailer) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		res := &models.Response{}
 
@@ -176,6 +187,17 @@ func ResetPasswordVerify(d database.Database, cache database.Cache) echo.Handler
 		if _, err := d.UpdateUser(c.Request().Context(), req.User); err != nil {
 			res.Message = err.Error()
 			return c.JSON(http.StatusInternalServerError, res)
+		}
+
+		mail := models.Mail{
+			From:    "admin@hydroguard.com",
+			To:      req.Email,
+			Subject: "Password updated",
+			Content: "Your password has been updated.",
+		}
+
+		if err := mailer.SendMail(c.Request().Context(), mail); err != nil {
+			log.Println(err.Error())
 		}
 
 		res.Message = "successful"
