@@ -29,10 +29,12 @@ func main() {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	mailer, err := mailer.InitMailer()
+	mailer, close, err := mailer.InitMailer()
 	if err != nil {
 		log.Fatal(err.Error())
 	}
+	defer close()
+
 	queue, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
 	if err != nil {
 		log.Fatal(err.Error())
