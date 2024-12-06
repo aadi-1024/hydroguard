@@ -10,6 +10,7 @@ import (
 
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
+	amqp "github.com/rabbitmq/amqp091-go"
 )
 
 var app *App
@@ -32,10 +33,16 @@ func main() {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
+	queue, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+	defer queue.Close()
 
 	app.cache = cache
 	app.db = db
 	app.mailer = mailer
+	app.queue = queue
 	SetupRoutes(e)
 
 	if err := e.Start("0.0.0.0:8080"); err != nil {

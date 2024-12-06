@@ -25,4 +25,8 @@ func SetupRoutes(e *echo.Echo) {
 	dam.GET("", handlers.GetAllDams(app.db))
 	dam.GET("/:id", handlers.GetDamById(app.db))
 	dam.PUT("", handlers.UpdateDam(app.db))
+
+	notif := e.Group("/notification")
+	notif.GET("", handlers.GetAllNotifications(app.db))
+	notif.POST("", handlers.CreateNotification(app.db))
 }

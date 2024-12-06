@@ -15,3 +15,11 @@ services:
       - --memory-limit=128
     ports:
       - 11211:11211
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - ./.rabbitmq:/var/lib/rabbitmq

@@ -120,7 +120,7 @@ func ResetPasswordRequestOTP(d database.Database, cache database.Cache, mailer m
 			From:    "admin@hydroguard.com",
 			To:      user.Email,
 			Subject: "Password reset OTP",
-			Content: fmt.Sprintf("Hello %s!\n\nYour OTP is <b>%s</b>\n\nValid for 5 minutes\n", actualUser.Name, strconv.Itoa(otp)),
+			Content: fmt.Sprintf("Hello %s!<br/><br/>Your OTP is <b>%s</b></br></br>Valid for 5 minutes", actualUser.Name, strconv.Itoa(otp)),
 		}
 		if err := mailer.SendMail(c.Request().Context(), mail); err != nil {
 			res.Message = err.Error()
