@@ -11,6 +11,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/aadi-1024/hydroguard/mailer/pkg"
 	"github.com/bradfitz/gomemcache/memcache"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/labstack/echo/v4"
@@ -116,7 +117,7 @@ func ResetPasswordRequestOTP(d database.Database, cache database.Cache, mailer m
 
 		//100,000 to 999,999
 		otp := rand.IntN(900_000) + 100_000
-		mail := models.Mail{
+		mail := pkg.Mail{
 			From:    "admin@hydroguard.com",
 			To:      user.Email,
 			Subject: "Password reset OTP",
@@ -189,7 +190,7 @@ func ResetPasswordVerify(d database.Database, cache database.Cache, mailer maile
 			return c.JSON(http.StatusInternalServerError, res)
 		}
 
-		mail := models.Mail{
+		mail := pkg.Mail{
 			From:    "admin@hydroguard.com",
 			To:      req.Email,
 			Subject: "Password updated",

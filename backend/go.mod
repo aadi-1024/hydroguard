@@ -8,6 +8,7 @@ require (
 	golang.org/x/crypto v0.29.0
 	gorm.io/driver/postgres v1.5.10
 	gorm.io/gorm v1.25.12
+	github.com/aadi-1024/hydroguard/mailer v0.0.0
 )
 
 require (
@@ -33,3 +34,5 @@ require (
 	golang.org/x/text v0.20.0 // indirect
 	golang.org/x/time v0.5.0 // indirect
 )
+
+replace github.com/aadi-1024/hydroguard/mailer => ../mailer
