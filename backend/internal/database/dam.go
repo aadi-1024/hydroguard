@@ -36,6 +36,6 @@ func (d *Database) GetDamById(ctx context.Context, id int) (models.Dam, error) {
 	defer cancel()
 
 	dam := models.Dam{}
-	err := d.conn.WithContext(ctx).First(dam, id).Error
+	err := d.conn.WithContext(ctx).Preload("Coordinates").First(&dam, id).Error
 	return dam, err
 }
