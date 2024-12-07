@@ -10,8 +10,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@mui/icons-material": "^6.1.10",
+    "@mui/material": "^6.1.10",
+    "@toolpad/core": "^0.10.0",
     "axios": "^1.7.2",
     "bootstrap": "^5.3.3",
+    "nodemon": "^3.1.7",
     "react": "^18.3.1",
     "react-bootstrap": "^2.10.4",
     "react-dom": "^18.3.1",

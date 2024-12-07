@@ -1,4 +1,4 @@
-import * as React from 'react';
+import  { useState, useMemo } from 'react';
 import { AuthenticationContext, SessionContext } from '@toolpad/core/AppProvider';
 import { Account } from '@toolpad/core/Account';
 
@@ -11,17 +11,12 @@ const demoSession = {
 };
 
 export default function AccountDemoSignedOut() {
-  const [session, setSession] = React.useState(null);
-  const authentication = React.useMemo(() => {
-    return {
-      signIn: () => {
-        setSession(demoSession);
-      },
-      signOut: () => {
-        setSession(null);
-      },
-    };
-  }, []);
+  const [session, setSession] = useState(null);
+
+  const authentication = useMemo(() => ({
+    signIn: () => setSession(demoSession),
+    signOut: () => setSession(null),
+  }), []);
 
   return (
     <AuthenticationContext.Provider value={authentication}>
