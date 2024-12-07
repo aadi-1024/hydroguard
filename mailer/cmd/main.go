@@ -8,6 +8,7 @@ import (
 	"os/signal"
 	"sync"
 	"syscall"
+	"time"
 
 	"github.com/joho/godotenv"
 )
@@ -74,7 +75,13 @@ loop:
 
 				if err := app.Mailer.DialAndSend(msg); err != nil {
 					log.Println(err.Error())
-					m.Nack(false, true)
+					wg.Add(1)
+					//add delay to prevent it from constantly reading and returning error
+					go func() {
+						defer wg.Done()
+						time.Sleep(1 * time.Second)
+						m.Nack(false, true)
+					}()
 					return
 				}
 
