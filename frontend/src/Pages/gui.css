@@ -1,0 +1,22 @@
+.bgmap{
+    height: 140vh;
+}
+.map{
+    margin-left:23vw;
+    margin-top: 90px;
+    height: 700px;
+    width: 700px;
+    
+}
+.ind {
+    fill: rgb(51, 26, 109); 
+    fill-opacity: 1;
+    stroke: black; 
+    stroke-width: 4; 
+
+}
+.states
+{
+    stroke: white;
+    stroke-width: 1;
+}
