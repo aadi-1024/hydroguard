@@ -9,7 +9,7 @@ import Grid from '@mui/material/Grid2';
 import Typography from '@mui/material/Typography';
 import Skeleton from '@mui/material/Skeleton';
 
-import Headerimage from '../assets /headerimage.jpg';
+import Headerimage from '../assets/headerimage.jpg';
 import './home.css';
 
 export default function BasicPageContainer() {
