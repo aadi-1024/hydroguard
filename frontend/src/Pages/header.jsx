@@ -14,7 +14,7 @@ import {
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import './header.css';
-import Logo from '../assets /logoupadated.png';
+import Logo from '../assets/logoupadated.png';
 
 const pages = ['Home', 'Dashboard', 'Actions', 'Chatbot'];
 const settings = ['Logout'];

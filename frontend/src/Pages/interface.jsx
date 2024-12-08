@@ -1,38 +1,14 @@
 import './interface.css';
-import HydroLogo from '../assets/hydroguardlogo.png';
-import HydroLogodark from '../assets/hydroguardpng.png';
+import HydroLogo from '../assets/hydrogaurdlogo.png';
+import HydroLogodark from '../assets/hydrogaurdpng.png';
 import AccountDemoSignedOut from './account.jsx';
 import Sidebarfooter from './sidebarfooter.jsx';
 import BasicPageContainer from './home.jsx';
 import { AppProvider } from '@toolpad/core/AppProvider';
 import { DashboardLayout, ThemeSwitcher } from '@toolpad/core/DashboardLayout';
 import { extendTheme, useTheme } from '@mui/material/styles';
-import { useContext, useMemo, useState } from 'react';
+import { useContext, useState } from 'react';
 import { AuthenticationContext, SessionContext } from '@toolpad/core/AppProvider';
-import HomeIcon from '@mui/icons-material/Home';
-import DashboardIcon from '@mui/icons-material/Dashboard';
-import BarChartIcon from '@mui/icons-material/BarChart';
-import DescriptionIcon from '@mui/icons-material/Description';
-import ChatBot from '@mui/icons-material/Assistant';
-
-// Navigation
-const NAVIGATION = [
-  { kind: 'header', title: '' },
-  { segment: 'home', title: 'Home', icon: <HomeIcon /> },
-  { segment: 'dashboard', title: 'Dashboard', icon: <DashboardIcon /> },
-  { kind: 'divider' },
-  { kind: 'header', title: 'Analytics' },
-  {
-    segment: 'reports',
-    title: 'Reports',
-    icon: <BarChartIcon />,
-    children: [
-      { segment: 'sales', title: 'Sales', icon: <DescriptionIcon /> },
-      { segment: 'traffic', title: 'Traffic', icon: <DescriptionIcon /> },
-    ],
-  },
-  { segment: 'chatbot', title: 'Chatbot', icon: <ChatBot /> },
-];
 
 // Light and dark mode settings
 const demoTheme = extendTheme({
@@ -47,14 +23,11 @@ const demoTheme = extendTheme({
 function useDemoRouter(initialPath) {
   const [pathname, setPathname] = useState(initialPath);
 
-  return useMemo(
-    () => ({
-      pathname,
-      searchParams: new URLSearchParams(),
-      navigate: (path) => setPathname(String(path)),
-    }),
-    [pathname]
-  );
+  return {
+    pathname,
+    searchParams: new URLSearchParams(),
+    navigate: (path) => setPathname(String(path)),
+  };
 }
 
 // Main Component
@@ -68,7 +41,6 @@ function DashboardLayoutSlots() {
     <AppProvider
       session={session}
       authentication={authentication}
-      navigation={NAVIGATION}
       branding={{
         logo: (
           <img

@@ -1,25 +1,31 @@
+import Sidebar from './Pages/sidebar';
+import Map from './Pages/gui.jsx';  
+import { Box } from '@mui/material';
+import './app.css';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
-
-import DashboardLayoutSlots from './Pages/interface.jsx';
-import 'bootstrap/dist/css/bootstrap.min.css';
-
-import{createBrowserRouter,RouterProvider} from 'react-router-dom';
 function App() {
-  const router=createBrowserRouter([
-    
+  const router = createBrowserRouter([
     {
-      path: "/interface",
-      element:<><DashboardLayoutSlots/></>
-    }
-   
-    
-  ])
+      path: '/',
+      element: (
+        <Box >
+          <Sidebar /> <Map />
+         
+        </Box>
+      ),
+    },
+    {
+      path: '/home',
+      element: (
+        <Box sx={{ padding: 2 }}>
+          <h1>HOME</h1>
+        </Box>
+      ),
+    },
+  ]);
 
-  return (
-    <>
-       <RouterProvider router={router}/>
-    </>
-  )
+  return <RouterProvider router={router} />;
 }
 
-export default App
+export default App;
