@@ -1,6 +1,6 @@
 import './interface.css';
-import HydroLogo from '../assets/hydroguardlogo.png';
-import HydroLogodark from '../assets/hydroguardpng.png';
+import HydroLogo from '../assets/hydrogaurdlogo.png';
+import HydroLogodark from '../assets/hydrogaurdpng.png';
 import AccountDemoSignedOut from './account.jsx';
 import Sidebarfooter from './sidebarfooter.jsx';
 import BasicPageContainer from './home.jsx';
