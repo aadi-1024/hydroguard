@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 # 1. Load the dataset
 # Replace 'rainfall_data.csv' with your dataset path
-df = pd.read_csv('C:\\Users\\HP\\OneDrive\\Desktop\\Sih 123\\book5.csv')
+df = pd.read_csv('./book5.csv')
 
 # 2. Data preprocessing
 # Handle null values
