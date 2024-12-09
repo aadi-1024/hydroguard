@@ -3,7 +3,6 @@ package mailer
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"os"
 
 	"github.com/aadi-1024/hydroguard/mailer/pkg"
@@ -15,13 +14,14 @@ type Mailer struct {
 	conn *amqp.Connection
 }
 
-func InitMailer() (Mailer, func() error, error) {
+func InitMailer(conn *amqp.Connection) (Mailer, func() error, error) {
 	m := Mailer{}
 
-	conn, err := amqp.Dial(fmt.Sprintf("amqp://%s:%s@localhost:%s/", os.Getenv("RABBITMQ_USER"), os.Getenv("RABBITMQ_PASSWORD"), os.Getenv("RABBITMQ_PORT")))
-	if err != nil {
-		return m, nil, err
-	}
+	// conn, err := amqp.Dial(fmt.Sprintf("amqp://%s:%s@localhost:%s/", os.Getenv("RABBITMQ_USER"), os.Getenv("RABBITMQ_PASSWORD"), os.Getenv("RABBITMQ_PORT")))
+	// if err != nil {
+	// 	return m, nil, err
+	// }
+	m.conn = conn
 
 	ch, err := conn.Channel()
 	if err != nil {

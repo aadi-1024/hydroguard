@@ -2,7 +2,7 @@ import { Drawer, List, ListItem, ListItemText, Divider, Typography, Box } from '
 import { Home, Info, AccountBox, ContactMail } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
 import './side.css'; 
-import logo from '../assets/hydrogaurdlogo.png';
+import logo from '../assets/logoupadated.png';
 
 function Sidebar() {
   return (

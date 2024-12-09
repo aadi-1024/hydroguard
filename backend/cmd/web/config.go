@@ -2,7 +2,7 @@ package main
 
 import (
 	"hydroguard/internal/database"
-	"hydroguard/internal/mailer"
+	"hydroguard/internal/util/mailer"
 
 	"github.com/rabbitmq/amqp091-go"
 )
