@@ -1,7 +1,3 @@
 .data
-<<<<<<< Updated upstream
 .env
 .rabbitmq
-=======
-node_modules
->>>>>>> Stashed changes
