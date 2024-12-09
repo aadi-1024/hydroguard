@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"hydroguard/internal/database"
-	"hydroguard/internal/mailer"
+	"hydroguard/internal/util/mailer"
 	"log"
 	"os"
 	"time"
