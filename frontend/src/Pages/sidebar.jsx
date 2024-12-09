@@ -2,7 +2,7 @@ import { Drawer, List, ListItem, ListItemText, Divider, Typography, Box } from '
 import { Home, Info, AccountBox, ContactMail } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
 import './side.css'; 
-import logo from '../assets/hydrogaurdlogo.png';
+import logo from '../assets/logoupadated.png';
 
 function Sidebar() {
   return (
@@ -13,7 +13,7 @@ function Sidebar() {
     variant="persistent" 
     sx={{
       '& .MuiDrawer-paper': {
-        backgroundColor: 'rgb(243, 240, 240)', 
+        backgroundColor: ' rgb(242, 249, 251);', 
         width: '22vw',
         height: '100vh',
         boxSizing: 'border-box',
@@ -38,7 +38,7 @@ function Sidebar() {
           <Link to="/about" className="link">
             <ListItem button>
               <Info sx={{ fontSize: '2rem', marginRight: 2 }} />
-              <ListItemText primary="About" />
+              <ListItemText primary="Dashboard" />
             </ListItem>
           </Link>
           <Link to="/profile" className="link">

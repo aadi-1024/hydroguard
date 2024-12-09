@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"hydroguard/internal/database"
-	"hydroguard/internal/mailer"
+	"hydroguard/internal/util/mailer"
 	"log"
 	"os"
 	"time"
@@ -29,17 +29,18 @@ func main() {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	mailer, close, err := mailer.InitMailer()
-	if err != nil {
-		log.Fatal(err.Error())
-	}
-	defer close()
 
 	queue, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
 	if err != nil {
 		log.Fatal(err.Error())
 	}
 	defer queue.Close()
+
+	mailer, close, err := mailer.InitMailer(queue)
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+	defer close()
 
 	app.cache = cache
 	app.db = db

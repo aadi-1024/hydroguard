@@ -16,7 +16,7 @@ const Gui = () => {
   ];
 
   const styleMask = {
-    fillColor: "rgb(243, 240, 240)", 
+    fillColor: "rgb(227, 235, 238)", 
     color: "#000",     
     fillOpacity: 1,
     weight: 0,

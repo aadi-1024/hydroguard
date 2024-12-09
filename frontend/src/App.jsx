@@ -1,28 +1,51 @@
 import Sidebar from './Pages/sidebar';
 import Map from './Pages/gui.jsx';  
-import { Box } from '@mui/material';
+
 import './app.css';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import Header from './Pages/header.jsx'
+import Home from './Pages/home.jsx'
+import Int from './Pages/interface.jsx'
+import Sign from './Pages/signin.jsx'
+import Right from './Pages/right.jsx'
+// import Idk from './Pages/idk.jsx'
 
 function App() {
   const router = createBrowserRouter([
     {
       path: '/',
       element: (
-        <Box >
-          <Sidebar /> <Map />
-         
-        </Box>
+        <> <Sidebar/> <Map/> <Right/></>
       ),
     },
     {
-      path: '/home',
+      path: '/idk',
       element: (
-        <Box sx={{ padding: 2 }}>
-          <h1>HOME</h1>
-        </Box>
+        <> <Sidebar/>  <Right/></>
       ),
     },
+    {
+      path:'/header',
+      element: <Header/>
+    },
+    {
+      path:'/right',
+      element: <Right/>
+    },
+    {
+      path:'/home',
+      element: <><Header/><Home/> </>
+
+    },
+    {
+      path:'/interface',
+      element: <Int/> 
+    },
+    {
+      path:'/signin',
+      element: <Sign/>
+    }
+    
   ]);
 
   return <RouterProvider router={router} />;

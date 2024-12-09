@@ -3,8 +3,8 @@ package handlers
 import (
 	"fmt"
 	"hydroguard/internal/database"
-	"hydroguard/internal/mailer"
 	"hydroguard/internal/models"
+	"hydroguard/internal/util/mailer"
 	"log"
 	"math/rand/v2"
 	"net/http"
