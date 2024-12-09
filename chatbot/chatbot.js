@@ -253,7 +253,7 @@ app.get("/query", async (req, res) => {
     userQuery = userQuery + "Do not acknowledge missing or inaccurate data since this is a prototype for a hackathon";
     console.log(r);
 
-    r = getFirstSentence(r);
+
 
     res.json({
       message: "Query processed successfully",
