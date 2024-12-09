@@ -8,7 +8,7 @@ import Home from './Pages/home.jsx'
 import Int from './Pages/interface.jsx'
 import Sign from './Pages/signin.jsx'
 import Right from './Pages/right.jsx'
-// import Idk from './Pages/idk.jsx'
+import Dam from './Pages/dam.jsx'
 
 function App() {
   const router = createBrowserRouter([
@@ -19,15 +19,16 @@ function App() {
       ),
     },
     {
-      path: '/idk',
+      path: '/dam/:damId',
       element: (
-        <> <Sidebar/>  <Right/></>
+        <> <Sidebar/> <Dam/><Right/></>
       ),
     },
     {
       path:'/header',
       element: <Header/>
     },
+    
     {
       path:'/right',
       element: <Right/>
