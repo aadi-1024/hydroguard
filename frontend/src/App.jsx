@@ -1,7 +1,7 @@
 import Sidebar from './Pages/sidebar';
 import Map from './Pages/gui.jsx';  
 
-import './app.css';
+import './App.css';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Header from './Pages/header.jsx'
 import Home from './Pages/home.jsx'

@@ -21,7 +21,6 @@ func CreateNotification(d database.Database) echo.HandlerFunc {
 		}
 
 		notif.CreatedAt = time.Now()
-		notif.Read = false
 
 		ret, err := d.CreateNotification(c.Request().Context(), notif)
 		if err != nil {
@@ -52,7 +51,7 @@ func GetAllNotifications(d database.Database) echo.HandlerFunc {
 			offset = 0
 		}
 
-		data, err := d.GetAllNotifications(c.Request().Context(), limit, offset, c.QueryParam("read"))
+		data, err := d.GetAllNotifications(c.Request().Context(), limit, offset, 1, c.QueryParam("read"))
 		if err != nil {
 			res.Message = err.Error()
 			return c.JSON(http.StatusInternalServerError, res)
@@ -60,6 +59,27 @@ func GetAllNotifications(d database.Database) echo.HandlerFunc {
 
 		res.Message = "successful"
 		res.Data = data
+		return c.JSON(http.StatusOK, res)
+	}
+}
+
+func MarkNotifAsRead(d database.Database) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		res := &models.Response{}
+		uid := 1
+		notifId, err := strconv.Atoi(c.Param("id"))
+		if err != nil {
+			res.Message = err.Error()
+			return c.JSON(http.StatusBadRequest, res)
+		}
+
+		err = d.MarkNotifAsRead(c.Request().Context(), notifId, uid)
+		if err != nil {
+			res.Message = err.Error()
+			return c.JSON(http.StatusInternalServerError, res)
+		}
+
+		res.Message = "successful"
 		return c.JSON(http.StatusOK, res)
 	}
 }

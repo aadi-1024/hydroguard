@@ -30,5 +30,6 @@ func SetupRoutes(e *echo.Echo) {
 
 	notif := e.Group("/notification")
 	notif.GET("", handlers.GetAllNotifications(app.db))
+	notif.GET("/read/:id", handlers.MarkNotifAsRead(app.db))
 	notif.POST("", handlers.CreateNotification(app.db))
 }

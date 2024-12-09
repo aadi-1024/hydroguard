@@ -7,6 +7,7 @@ import (
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 type Database struct {
@@ -16,14 +17,16 @@ type Database struct {
 
 func InitDB(dsn string, timeout time.Duration) (Database, error) {
 	db := Database{}
-	conn, err := gorm.Open(postgres.Open(dsn))
+	conn, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Info),
+	})
 	if err != nil {
 		return db, err
 	}
 
 	db.conn = conn
 	db.timeout = timeout
-	err = conn.AutoMigrate(&models.Dam{}, &models.Notification{}, &models.Coordinate{}, &models.User{}, &models.Analysis{})
+	err = conn.AutoMigrate(&models.Dam{}, &models.Notification{}, &models.Coordinate{}, &models.User{}, &models.Analysis{}, &models.NotificationsRead{})
 	return db, err
 }
 
