@@ -4,7 +4,7 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
 # 1. Load Data
-data = pd.read_csv('C:\\Users\\HP\\OneDrive\\Desktop\\Sih 123\\Crop_recommendation.csv')
+data = pd.read_csv('./Crop_recommendation.csv')
 
 # 2. Feature Encoding (One-Hot Encode 'season' and 'label')
 data = pd.get_dummies(data, columns=['season', 'label'])

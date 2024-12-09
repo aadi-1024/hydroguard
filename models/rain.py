@@ -5,9 +5,10 @@ from sklearn.metrics import mean_absolute_error, mean_squared_error
 import numpy as np
 import matplotlib.pyplot as plt
 import itertools
+import pickle
 
 # Step 1: Load the dataset
-file_path = "C:\\Users\\HP\\OneDrive\\Desktop\\Sih 123\\average_rainfall_1900_2020.csv"  # Replace with your dataset path
+file_path = "./average_rainfall_1900_2020.csv"  # Replace with your dataset path
 rainfall_data = pd.read_csv(file_path)
 
 # Ensure the Year column is set as the index
@@ -68,31 +69,34 @@ model = SARIMAX(
 )
 sarima_result = model.fit()
 
+with open('rain.bin', 'b+w') as file:
+    pickle.dump(sarima_result, file)
+
 # Step 5: Forecast for the next 10 years
-forecast_years = 20
-forecast = sarima_result.get_forecast(steps=forecast_years)
-forecast_index = range(rainfall_data.index[-1] + 1, rainfall_data.index[-1] + 1 + forecast_years)
-forecast_values = forecast.predicted_mean
-forecast_conf_int = forecast.conf_int()
+# forecast_years = 20
+# forecast = sarima_result.get_forecast(steps=forecast_years)
+# forecast_index = range(rainfall_data.index[-1] + 1, rainfall_data.index[-1] + 1 + forecast_years)
+# forecast_values = forecast.predicted_mean
+# forecast_conf_int = forecast.conf_int()
 
-# Step 6: Plot the forecast
-plt.figure(figsize=(12, 6))
-plt.plot(rainfall_data.index, rainfall_data["Average_Rainfall"], label="Actual Data", marker='o')
-plt.plot(forecast_index, forecast_values, label="Forecasted Data", linestyle="--", marker='o', color="red")
-plt.fill_between(forecast_index, 
-                 forecast_conf_int.iloc[:, 0], 
-                 forecast_conf_int.iloc[:, 1], color="pink", alpha=0.3)
-plt.title(" Forecasted Average Rainfall with SARIMA")
-plt.xlabel("Year")
-plt.ylabel("Average Rainfall (mm)")
-plt.legend()
-plt.grid()
-plt.show()
+# # Step 6: Plot the forecast
+# plt.figure(figsize=(12, 6))
+# plt.plot(rainfall_data.index, rainfall_data["Average_Rainfall"], label="Actual Data", marker='o')
+# plt.plot(forecast_index, forecast_values, label="Forecasted Data", linestyle="--", marker='o', color="red")
+# plt.fill_between(forecast_index, 
+#                  forecast_conf_int.iloc[:, 0], 
+#                  forecast_conf_int.iloc[:, 1], color="pink", alpha=0.3)
+# plt.title(" Forecasted Average Rainfall with SARIMA")
+# plt.xlabel("Year")
+# plt.ylabel("Average Rainfall (mm)")
+# plt.legend()
+# plt.grid()
+# plt.show()
 
-# Step 7: Print metrics and forecast values
-print("Mean Absolute Error (MAE):", mean_absolute_error(rainfall_data["Average_Rainfall"], sarima_result.fittedvalues))
-print("Root Mean Squared Error (RMSE):", np.sqrt(mean_squared_error(rainfall_data["Average_Rainfall"], sarima_result.fittedvalues)))
+# # Step 7: Print metrics and forecast values
+# print("Mean Absolute Error (MAE):", mean_absolute_error(rainfall_data["Average_Rainfall"], sarima_result.fittedvalues))
+# print("Root Mean Squared Error (RMSE):", np.sqrt(mean_squared_error(rainfall_data["Average_Rainfall"], sarima_result.fittedvalues)))
 
-print("\nForecasted Average Rainfall for Future Years:")
-forecast_values.index = forecast_index
-print(forecast_values)
+# print("\nForecasted Average Rainfall for Future Years:")
+# forecast_values.index = forecast_index
+# print(forecast_values)
