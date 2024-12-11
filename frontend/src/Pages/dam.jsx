@@ -19,12 +19,21 @@ const Dam = () => {
       setDamData(response.data.data);
 
       console.log(`Fetching analysis for dam`);
-      const res = await axios.get(`http://127.0.0.1:8080/dam/analysis/${damId}`);
+      let res = await axios.get(`http://127.0.0.1:8080/dam/analysis/${damId}`);
       console.log(res.data);
-      const x = res.data.data.map((i) => i.water_cover)
-      setWaterCover(x)
-      console.log(waterCover)
+      let x = res.data.data.map((i) => i.water_cover);
 
+      if (x.length == 0) {
+        const res = await axios.post(`http://127.0.0.1:8080/dam/analysis/${damId}`);
+        if (res.status != 200) {
+          console.log(res.data)
+        }
+      }
+
+      res = await axios.get(`http://127.0.0.1:8080/dam/analysis/${damId}`);
+      x = res.data.data.map((i) => i.water_cover);
+
+      setWaterCover(x);
     } catch (error) {
       console.error("Error fetching data:", error);
       setError("Failed to load data");
@@ -46,11 +55,12 @@ const Dam = () => {
       </Typography>
       </Box>
       {loading && <Typography>Loading...</Typography>}
-      {error && <Typography color="error">{error}</Typography>}
+      {/* {error && <Typography color="error">{error}</Typography>} */}
 
       {!loading && damData && waterCover && (
         <>
-          <SessionsChart d={waterCover} order={waterCover[0] > waterCover[waterCover.length-1]?'Increasing':'Decreasing'}/>
+          {waterCover.length > 0 && <SessionsChart d={waterCover} order={ waterCover[0] > waterCover[waterCover.length-1]?'Increasing':'Decreasing'}/>}
+          
           <Box className="Boxy">
             <Paper className="dam-box" sx={{ borderRadius: "20px" }}>
               <Typography className="typography-title" variant="h6">
