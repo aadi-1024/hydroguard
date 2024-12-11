@@ -63,9 +63,9 @@ const Dam = () => {
 
       {!loading && damData && waterCover && (
         <>
-          {waterCover.length > 0 && <SessionsChart d={waterCover} order={waterCover[0] > waterCover[waterCover.length - 1] ? 'Increasing' : 'Decreasing'} h={150} w='97.5%' />}
-          {volume.length > 0 && <SessionsChart d={volume} order={volume[0] > volume[volume.length - 1] ? 'Increasing' : 'Decreasing'} h={150} w='95%' />}
-          {sedimentation.length > 0 && <SessionsChart d={sedimentation} order={sedimentation[0] > sedimentation[sedimentation.length - 1] ? 'Increasing' : 'Decreasing'} h={150} w='95%' />}
+          <div className="graph1">{waterCover.length > 0 && <SessionsChart d={waterCover} order={waterCover[0] > waterCover[waterCover.length - 1] ? 'Increasing' : 'Decreasing'} h={150} w={800}/>}</div>
+          {volume.length > 0 && <SessionsChart d={volume} order={volume[0] > volume[volume.length - 1] ? 'Increasing' : 'Decreasing'} h={150} w='25%' />}
+          {sedimentation.length > 0 && <SessionsChart d={sedimentation} order={sedimentation[0] > sedimentation[sedimentation.length - 1] ? 'Increasing' : 'Decreasing'} h={150} w='25%' />}
           <Box className="Boxy">
             <Paper className="dam-box" sx={{ borderRadius: "20px" }}>
               <Typography className="typography-title" variant="h6">
