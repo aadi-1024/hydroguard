@@ -18,7 +18,7 @@ export default function BasicPageContainer() {
 
   return (
     <AppProvider router={router} theme={theme}>
-      <Paper sx={{ width: '100%' }}>
+      <Paper sx={{ width: '100%' , paddingLeft: '25%'}}>
         <PageContainer>
           <Grid container spacing={2}>
             <Grid xs={12}>
@@ -30,7 +30,7 @@ export default function BasicPageContainer() {
               <img src={Headerimage} alt="Header" className="header-image" />
             </Grid>
             <Grid xs={12}>
-              <Typography variant="h6" className="subheading">
+              <Typography variant="h6" className="subheading" sx={{ fontWeight: 'bold' }}>
                 Transforming Dam and Reservoir Management
               </Typography>
             </Grid>
@@ -40,30 +40,46 @@ export default function BasicPageContainer() {
               </Typography>
             </Grid>
             <Grid xs={12}>
-              <Typography variant="h6" className="subheading">
+              <Typography variant="h6" className="subheading" sx={{ fontWeight: 'bold' }}>
                 The Challenges We Address
               </Typography>
             </Grid>
             <Grid xs={12}>
               <Typography className="simpletext">
-                Aging Infrastructure<br />
+                <br /><Typography className="subheading" sx={{ fontWeight: 'bold' }}>
+                Aging Infrastructure
+              </Typography>
                 Many dams and reservoirs were built decades ago, with designs that no longer align with current needs and environmental realities. Over time, silting, structural stress, and inefficiencies in water storage have become critical issues.<br /><br />
+                
+                
+                <Typography className="subheading" sx={{ fontWeight: 'bold' }}>
                 Climate Change Impact<br />
+              </Typography>
                 Adverse climatic changes exacerbate water stress, increase the risk of structural failures, and alter hydrological patterns, requiring re-evaluation of dam operations.<br /><br />
+                <Typography className="subheading" sx={{ fontWeight: 'bold' }}>
                 Shifting Agricultural Practices<br />
+              </Typography>
+                
                 Evolving agricultural needs, new cropping patterns, and technological advancements in farming demand a dynamic approach to water allocation and management.<br /><br />
-                Resource Inefficiencies<br />
+                
+                <Typography className="subheading" sx={{ fontWeight: 'bold' }}>
+                Resource Inefficiencies<br /><br />
+              </Typography>
+                
                 The command areas of dams are shifting due to insufficient water storage and outdated infrastructure, leading to suboptimal water distribution and environmental challenges.
               </Typography>
             </Grid>
             <Grid xs={12}>
-              <Typography variant="h6" className="subheading">
+              <Typography variant="h6" className="subheading" sx={{ fontWeight: 'bold' }}>
                 The HydroGuard Solution
               </Typography>
             </Grid>
             <Grid xs={12}>
               <Typography className="simpletext">
-                Real-Time Monitoring<br />
+              <Typography className="subheading" sx={{ fontWeight: 'bold' }}>
+              Real-Time Monitoring<br />
+              </Typography>
+                
                 We provide live data on water pressure, structural health, and environmental variables to detect risks early and enable proactive management.<br /><br />
                 Decision Support System for Water Management<br />
                 Empowering water managers and policy-makers with predictive insights to optimize water allocation and distribution.<br /><br />
@@ -74,7 +90,7 @@ export default function BasicPageContainer() {
               </Typography>
             </Grid>
             <Grid xs={12}>
-              <Typography variant="h6" className="subheading">
+              <Typography variant="h6" className="subheading" sx={{ fontWeight: 'bold' }}>
                 How Does HydroGuard Work?
               </Typography>
             </Grid>
