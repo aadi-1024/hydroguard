@@ -5,8 +5,13 @@
     width: 100vw;
     gap: 40px;
     flex-wrap: wrap;
-    margin-top: 120px;
+    margin-top: 12px;
   }
+  /* .heading{
+    padding-bottom: 50px;
+    justify-content: center;
+    align-items: center;
+  } */
   
   .Boxy {
     display: flex;
@@ -16,8 +21,8 @@
   
   .dam-box {
     
-    width: 24vw;
-    height: 30vh;
+    width: 25vw;
+    height: 25vh;
     background-color: rgb(255, 255, 255);
    
     border-radius: 1000px;
