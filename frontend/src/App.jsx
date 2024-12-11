@@ -9,6 +9,7 @@ import Int from './Pages/interface.jsx'
 import Sign from './Pages/signin.jsx'
 import Right from './Pages/right.jsx'
 import Dam from './Pages/dam.jsx'
+import Litter from './Pages/litter.jsx'
 
 function App() {
   const router = createBrowserRouter([
@@ -16,6 +17,12 @@ function App() {
       path: '/',
       element: (
         <> <Sidebar/> <Map/> <Right/></>
+      ),
+    },
+    {
+      path: '/litter',
+      element: (
+        <><Sidebar/> <Litter/><Right/> </>
       ),
     },
     {
