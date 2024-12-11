@@ -1,7 +1,7 @@
 import { MapContainer, TileLayer, GeoJSON, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import indiaGeoJson from "../assets/india.json";
-import indiaStatesGeoJson from "../assets/indian-states.json";
+import indiaGeoJson from "../assets/akhandbharat.json";
+import indiaStatesGeoJson from "../assets/chal.json";
 import L from "leaflet";
 import "./gui.css";
 import { useNavigate } from "react-router-dom";
@@ -63,7 +63,7 @@ const Gui = () => {
   };
 
   const indiaBounds = [
-    [6.462, 68.174],
+    [11.462, 68.174],
     [35.676, 97.395],
   ];
 

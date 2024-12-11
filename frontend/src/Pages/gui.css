@@ -4,14 +4,14 @@
 .map{
     margin-left:23vw;
     margin-top: 90px;
-    height: 700px;
+    height: 760px;
     width: 700px;
     
 }
 .ind {
     fill: rgb(51, 26, 109); 
     fill-opacity: 1;
-    stroke: black; 
+    stroke: rgb(51, 26, 109); 
     stroke-width: 4; 
 
 }
