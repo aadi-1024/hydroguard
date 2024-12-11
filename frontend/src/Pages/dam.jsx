@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
-import { Typography, Box, Paper } from "@mui/material";
+import { Typography, Box, Paper, Grid2 } from "@mui/material";
 import "./dam.css";
 import SessionsChart from "../components/sessionchart";
+import { Grid } from "@mui/system";
 
 const Dam = () => {
   const { damId } = useParams();
@@ -11,6 +12,8 @@ const Dam = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const [waterCover, setWaterCover] = useState(null);
+  const [volume, setVolume] = useState(null);
+  const [sedimentation, setSediment] = useState(null);
 
   const handleLoad = async () => {
     try {
@@ -32,7 +35,8 @@ const Dam = () => {
 
       res = await axios.get(`http://127.0.0.1:8080/dam/analysis/${damId}`);
       x = res.data.data.map((i) => i.water_cover);
-
+      setVolume(res.data.data.map((i) => i.live_volume));
+      setSediment(res.data.data.map((i) => i.sedimentation));
       setWaterCover(x);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -47,20 +51,21 @@ const Dam = () => {
   }, []);
 
   return (
-      
+
     <Box className="cont">
-      <Box className = "heading">
-      <Typography className="heading2" variant="h3">
-      {/* Govind Sagar Dam */}
-      </Typography>
+      <Box className="heading">
+        <Typography className="heading2" variant="h3">
+          {/* Govind Sagar Dam */}
+        </Typography>
       </Box>
       {loading && <Typography>Loading...</Typography>}
       {/* {error && <Typography color="error">{error}</Typography>} */}
 
       {!loading && damData && waterCover && (
         <>
-          {waterCover.length > 0 && <SessionsChart d={waterCover} order={ waterCover[0] > waterCover[waterCover.length-1]?'Increasing':'Decreasing'}/>}
-          
+          {waterCover.length > 0 && <SessionsChart d={waterCover} order={waterCover[0] > waterCover[waterCover.length - 1] ? 'Increasing' : 'Decreasing'} h={150} w='97.5%' />}
+          {volume.length > 0 && <SessionsChart d={volume} order={volume[0] > volume[volume.length - 1] ? 'Increasing' : 'Decreasing'} h={150} w='95%' />}
+          {sedimentation.length > 0 && <SessionsChart d={sedimentation} order={sedimentation[0] > sedimentation[sedimentation.length - 1] ? 'Increasing' : 'Decreasing'} h={150} w='95%' />}
           <Box className="Boxy">
             <Paper className="dam-box" sx={{ borderRadius: "20px" }}>
               <Typography className="typography-title" variant="h6">

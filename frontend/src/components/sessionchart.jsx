@@ -42,7 +42,7 @@ function getDaysInMonth(month, year) {
 export default function SessionsChart(props) {
   const theme = useTheme();
   const data = getDaysInMonth(4, 2024);
-  const { d, order } = props;
+  const { d, order, w, h } = props;
 
   const colorPalette = [
     theme.palette.primary.light,
@@ -51,7 +51,7 @@ export default function SessionsChart(props) {
   ];
 
   return (
-    <Card variant="outlined" sx={{ width: '50%' }}>
+    <Card variant="outlined" sx={{ width: w }}>
       <CardContent>
         <Typography component="h2" variant="subtitle2" gutterBottom>
           Water Cover in km<sup>2</sup>
@@ -94,7 +94,7 @@ export default function SessionsChart(props) {
               data: d,
             },
           ]}
-          height={250}
+          height={h}
           margin={{ left: 50, right: 20, top: 20, bottom: 20 }}
           grid={{ horizontal: true }}
           sx={{
