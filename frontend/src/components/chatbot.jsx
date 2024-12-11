@@ -4,7 +4,7 @@ import ChatBot from "react-chatbotify";
 
 const MyChatBot = () => {
   async function run(userQuery) {
-    const response = await fetch("http://localhost:5000/query", {
+    const response = await fetch("http://localhost:10000/query", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
