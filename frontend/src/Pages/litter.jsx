@@ -1,9 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import axios from 'axios';
-
+import './litter.css'
 const Litter = () => {
   const videoRef = useRef(null);
-  const [detection, setDetection] = useState(null);
+//   const [detection, setDetection] = useState(null);
 
   useEffect(() => {
     const startCamera = async () => {
@@ -31,25 +31,33 @@ const Litter = () => {
       const imageData = canvas.toDataURL('image/png');
 
       try {
-        const response = await axios.post('http://localhost:8080/detect', { image: imageData });
-        setDetection(response.data);
+        const response = await axios.post('http://localhost:8080/detect', { image: imageData }, {
+          responseType: 'blob', // Expecting a video blob from the backend
+        });
+
+        const videoBlob = new Blob([response.data], { type: 'video/mp4' });
+        const videoURL = URL.createObjectURL(videoBlob);
+
+        if (videoRef.current) {
+          videoRef.current.srcObject = null; // Clear the current stream
+          videoRef.current.src = videoURL;
+          videoRef.current.play();
+        }
       } catch (error) {
-        console.error('Error sending image to backend:', error);
+        console.error('Error sending image to backend or fetching video:', error);
       }
     }
   };
 
   return (
-    <div>
-     
-      <video ref={videoRef} autoPlay playsInline style={{ width: '50vw', height: 'auto' , marginLeft:'25vw',marginTop:'10vh'}}></video>
-      <button onClick={captureFrame}>Capture and Detect</button>
-      {detection && (
-        <div>
-          <h2>Detection Result:</h2>
-          <p>{detection.message}</p>
-        </div>
-      )}
+    <div className='full'>
+      <video
+        ref={videoRef}
+        autoPlay
+        playsInline
+        style={{ width: '50vw', height: 'auto', marginTop: '10vh' ,}}
+      ></video>
+       <button className="capture-button" onClick={captureFrame}>Capture and Detect</button>
     </div>
   );
 };

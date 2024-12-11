@@ -37,8 +37,12 @@ const Gui = () => {
             ...indiaGeoJson.features.flatMap((f) =>
               f.geometry.type === "Polygon"
                 ? f.geometry.coordinates
-                : f.geometry.coordinates.flat()
+                : f.geometry.coordinates.flat() 
             ),
+          
+            
+            
+
           ],
         },
       },
