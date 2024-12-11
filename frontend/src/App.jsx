@@ -1,6 +1,5 @@
 import Sidebar from './Pages/sidebar';
 import Map from './Pages/gui.jsx';  
-
 import './App.css';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Header from './Pages/header.jsx'
@@ -10,6 +9,7 @@ import Sign from './Pages/signin.jsx'
 import Right from './Pages/right.jsx'
 import Dam from './Pages/dam.jsx'
 import Litter from './Pages/litter.jsx'
+import Prediction from './Pages/prediction.jsx'
 
 function App() {
   const router = createBrowserRouter([
@@ -35,7 +35,10 @@ function App() {
       path:'/header',
       element: <Header/>
     },
-    
+    {
+      path:'/prediction',
+      element: <><Sidebar/><Prediction/><Right/></>
+    },
     {
       path:'/right',
       element: <Right/>

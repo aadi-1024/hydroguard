@@ -2,6 +2,7 @@ import { MapContainer, TileLayer, GeoJSON, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import indiaGeoJson from '../assets/india.json'; 
 import indiaStatesGeoJson from '../assets/indian-states.json'; 
+
 import L from 'leaflet';
 import './gui.css';
 import { useNavigate } from 'react-router-dom';
@@ -39,7 +40,12 @@ const Gui = () => {
               f.geometry.type === "Polygon"
                 ? f.geometry.coordinates
                 : f.geometry.coordinates.flat() 
+
             ),
+          
+            
+            
+
           ],
         },
       },

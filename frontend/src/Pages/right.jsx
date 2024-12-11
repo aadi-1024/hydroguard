@@ -11,7 +11,7 @@ const Right = () => {
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
-        const response = await axios.get('http://0.0.0.0:8080/notification', {
+        const response = await axios.get('http://0.0.0.0:8080/notification?read=false', {
           params: { limit: 10, offset: 0, read: "false" },
         });
 

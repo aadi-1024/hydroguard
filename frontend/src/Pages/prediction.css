@@ -1,0 +1,15 @@
+.inp{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top:120px;
+    
+}
+.hed{
+    color:#274C77;
+    font-weight: 600;
+    font-size: 28px;
+}
+.inp #filled-basic{
+    border-radius: 10px;
+}
