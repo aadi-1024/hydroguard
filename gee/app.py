@@ -56,3 +56,12 @@ def pop():
     ).get('population')
 
     return str(ee.Number(total_population).getInfo())
+
+@app.post('/area')
+def area():
+    data = request.get_json(force=True)
+    coords = []
+    for i in data['coordinates']:
+        coords.append([i['longitude'], i['latitude']])
+    area = ee.Geometry.Polygon(coords).area()
+    return str(ee.Number(area).getInfo())
