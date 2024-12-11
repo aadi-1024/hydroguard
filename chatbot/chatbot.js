@@ -6,6 +6,7 @@ const {
 const { GoogleAIFileManager } = require("@google/generative-ai/server");
 const express = require("express");
 const dotenv = require("dotenv");
+const cors = require("cors");
 dotenv.config();
 const apiKey = process.env.GEMINI_API_KEY;
 const genAI = new GoogleGenerativeAI(apiKey);
@@ -15,6 +16,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cors());
 /**
  * Uploads the given file to Gemini.
  *
@@ -238,7 +240,7 @@ app.get("/", (req, res) => {
   res.send("Gemini API Server is running!");
 });
 
-app.get("/query", async (req, res) => {
+app.post("/query", async (req, res) => {
   var { userQuery } = req.body;
 
   if (!userQuery) {

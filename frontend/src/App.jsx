@@ -1,6 +1,6 @@
 import Sidebar from './Pages/sidebar';
 import Map from './Pages/gui.jsx';  
-
+import MyChatBot from './components/chatbot.jsx';
 import './App.css';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Header from './Pages/header.jsx'
@@ -16,7 +16,7 @@ function App() {
     {
       path: '/',
       element: (
-        <> <Sidebar/> <Map/> <Right/></>
+        <> <Sidebar/> <Map/> <Right/> <MyChatBot/></>
       ),
     },
     {
