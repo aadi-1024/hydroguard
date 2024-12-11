@@ -39,9 +39,10 @@ function getDaysInMonth(month, year) {
   return days;
 }
 
-export default function SessionsChart() {
+export default function SessionsChart(props) {
   const theme = useTheme();
   const data = getDaysInMonth(4, 2024);
+  const { d, order } = props;
 
   const colorPalette = [
     theme.palette.primary.light,
@@ -53,7 +54,7 @@ export default function SessionsChart() {
     <Card variant="outlined" sx={{ width: '50%' }}>
       <CardContent>
         <Typography component="h2" variant="subtitle2" gutterBottom>
-          Sedimentation Accumulation
+          Water Cover in km<sup>2</sup>
         </Typography>
         <Stack sx={{ justifyContent: 'space-between' }}>
           <Stack
@@ -65,9 +66,9 @@ export default function SessionsChart() {
             }}
           >
             <Typography variant="h4" component="p">
-              13,277
+              {d[d.length-1].toFixed(2)}
             </Typography>
-            <Chip size="small" color="success" label="-35%" />
+            <Chip size="small" color="success" label={"+" + (Math.abs(d[0] - d[d.length - 1]) / d[d.length - 1]).toFixed(2)} />
           </Stack>
           <Typography variant="caption" sx={{ color: 'text.secondary' }}>
             Volumes per day for the last 30 Years
@@ -75,13 +76,12 @@ export default function SessionsChart() {
         </Stack>
         <LineChart
           colors={colorPalette}
-          xAxis={[
-            {
-              scaleType: 'point',
-              data,
-              tickInterval: (index, i) => (i + 1) % 5 === 0,
-            },
-          ]}
+          // xAxis={[
+          //   {
+          //     scaleType: 'point',
+          //     tickInterval: (index, i) => (i + 1) % 5 === 0,
+          //   },
+          // ]}
           series={[
             {
               id: 'direct',
@@ -90,12 +90,8 @@ export default function SessionsChart() {
               curve: 'linear',
               stack: 'total',
               area: true,
-              stackOrder: 'ascending',
-              data: [
-                300, 900, 600, 1200, 1500, 1800, 2400, 2100, 2700, 3000, 1800, 3300,
-                3600, 3900, 4200, 4500, 3900, 4800, 5100, 5400, 4800, 5700, 6000,
-                6300, 6600, 6900, 7200, 7500, 7800, 8100,
-              ],
+              stackOrder: order,
+              data: d,
             },
           ]}
           height={250}

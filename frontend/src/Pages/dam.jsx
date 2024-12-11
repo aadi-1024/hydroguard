@@ -10,12 +10,21 @@ const Dam = () => {
   const [damData, setDamData] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [waterCover, setWaterCover] = useState(null);
 
   const handleLoad = async () => {
     try {
       console.log(`Fetching data for damId: ${damId}`);
       const response = await axios.get(`http://127.0.0.1:8080/dam/${damId}`);
       setDamData(response.data.data);
+
+      console.log(`Fetching analysis for dam`);
+      const res = await axios.get(`http://127.0.0.1:8080/dam/analysis/${damId}`);
+      console.log(res.data);
+      const x = res.data.data.map((i) => i.water_cover)
+      setWaterCover(x)
+      console.log(waterCover)
+
     } catch (error) {
       console.error("Error fetching data:", error);
       setError("Failed to load data");
@@ -26,7 +35,7 @@ const Dam = () => {
 
   useEffect(() => {
     handleLoad(); // Load data when the component mounts and damId is available
-  });
+  }, []);
 
   return (
       
@@ -39,9 +48,9 @@ const Dam = () => {
       {loading && <Typography>Loading...</Typography>}
       {error && <Typography color="error">{error}</Typography>}
 
-      {!loading && damData && (
+      {!loading && damData && waterCover && (
         <>
-          <SessionsChart/>
+          <SessionsChart d={waterCover} order={waterCover[0] > waterCover[waterCover.length-1]?'Increasing':'Decreasing'}/>
           <Box className="Boxy">
             <Paper className="dam-box" sx={{ borderRadius: "20px" }}>
               <Typography className="typography-title" variant="h6">
