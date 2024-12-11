@@ -1,6 +1,7 @@
 // MyChatBot.js
 import React from "react";
 import ChatBot from "react-chatbotify";
+import icon from "../assets/aichatbotpic.svg";
 
 const MyChatBot = () => {
   async function run(userQuery) {
@@ -27,8 +28,34 @@ const MyChatBot = () => {
       path: "model_loop"
     },
   }
+
+  const settings = {
+    header : {
+        title : "Hydroguard Chatbot"
+    },
+    ariaLabel: {
+        chatButton: "Open chatbot"
+    },
+    chatButton: {
+        icon    : icon
+    },   
+    notification : {
+        disabled : true
+    },
+    tooltip : {
+        text : "Happy to serve :-)"
+    },
+    fileAttachment : {
+        disabled : true
+    },
+    emoji : {
+        disabled : true
+    }
+}
+
+
 return (
-    <ChatBot flow={flow}/>
+    <ChatBot flow={flow} settings={settings}/>
   );
 };
 export default MyChatBot;
