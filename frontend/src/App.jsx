@@ -42,7 +42,7 @@ function App() {
     },
     {
       path:'/home',
-      element: <><Header/><Home/> </>
+      element: <><Sidebar/><Home/> </>
 
     },
     {
