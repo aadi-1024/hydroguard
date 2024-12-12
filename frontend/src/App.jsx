@@ -46,7 +46,7 @@ function App() {
       element: <Right/>
     },
     {
-      path:'/polygon/:coordinate',
+      path:'/polygon/:coordinates',
       element: <Cords/>
     },
     {
