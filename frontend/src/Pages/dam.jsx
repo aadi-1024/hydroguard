@@ -83,9 +83,9 @@ const Dam = () => {
       {!loading && damData && waterCover && (
         <>
           <Box sx={{display:"flex", alignItems:'center', flexWrap:"wrap", width:"55vw", gap:'1vw'}}> 
-            {waterCover.length > 0 && <SessionsChart d={waterCover} order={waterCover[0] > waterCover[waterCover.length - 1] ? 'Increasing' : 'Decreasing'} h={150} w='52vw' position='center' />}
-            {volume.length > 0 && <SessionsChart d={volume} order={volume[0] > volume[volume.length - 1] ? 'Increasing' : 'Decreasing'} h={150} w='23vw' />}
-            {sedimentation.length > 0 && <SessionsChart d={sedimentation} order={sedimentation[0] > sedimentation[sedimentation.length - 1] ? 'Increasing' : 'Decreasing'} h={150} w='28vw' />}
+            {waterCover.length > 0 && <SessionsChart title={"Water Cover"} caption={"in km^2"} d={waterCover} order={waterCover[0] > waterCover[waterCover.length - 1] ? 'Increasing' : 'Decreasing'} h={150} w='52vw' position='center' />}
+            {volume.length > 0 && <SessionsChart title={"Volume"} d={volume.map((i) => i/1000)} caption={"in km^3"} order={volume[0] > volume[volume.length - 1] ? 'Increasing' : 'Decreasing'} h={150} w='23vw' />}
+            {sedimentation.length > 0 && <SessionsChart title={"Sedimentation"} caption={"in km^3"} d={sedimentation.map((i) => i / 1000000000)} order={sedimentation[0] > sedimentation[sedimentation.length - 1] ? 'Increasing' : 'Decreasing'} h={150} w='28vw' />}
           </Box>
           <Box className="Boxy">
             <Paper className="dam-box" sx={{ borderRadius: "20px" }}>
