@@ -14,6 +14,7 @@ import Prediction from './Pages/prediction.jsx'
 import Cords from './Pages/cordinates'
 import ContactUsForm from './Pages/contact.jsx';
 import Cordid from './Pages/cordid.jsx'
+import Canal from './Pages/canal.jsx'
 function App() {
   const router = createBrowserRouter([
     {
@@ -26,6 +27,12 @@ function App() {
       path: '/contact',
       element: (
         <> <Sidebar/> <ContactUsForm/> </>
+      ),
+    },
+    {
+      path: '/canal',
+      element: (
+        <> <Sidebar/><Canal/><Right/> </>
       ),
     },
     {

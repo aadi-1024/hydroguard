@@ -1,5 +1,5 @@
 import { Drawer, List, ListItem, ListItemText, Divider, Typography, Box } from '@mui/material';
-import { Home, Info, AccountBox, ContactMail } from '@mui/icons-material';
+import { Home, Info, ContactMail } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
 import './side.css'; 
 import logo from '../assets/logoupadated.png';
@@ -45,6 +45,12 @@ function Sidebar() {
             <ListItem button>
               <ContactMail sx={{ fontSize: '2rem', marginRight: 2 }} />
               <ListItemText primary="Contact Us" />
+            </ListItem>
+          </Link>
+          <Link to="/canal" className="link">
+            <ListItem button>
+              <Info sx={{ fontSize: '2rem', marginRight: 2 }} />
+              <ListItemText primary="Canals" />
             </ListItem>
           </Link>
         </List>
