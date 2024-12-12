@@ -12,14 +12,15 @@ import (
 	"strconv"
 
 	"encoding/csv"
+	"os"
+
 	"github.com/bradfitz/gomemcache/memcache"
 	"github.com/labstack/echo/v4"
-	"os"
 )
 
 // Function to read C value from c-values.csv
 func getCValue(soilType string) (float64, error) {
-	file, err := os.Open("../c-values.csv")
+	file, err := os.Open("./c-values.csv")
 	if err != nil {
 		return 0, fmt.Errorf("failed to open c-values.csv: %v", err)
 	}
@@ -64,13 +65,8 @@ func InitiateRequest(db database.Database, cache database.Cache) echo.HandlerFun
 	return func(c echo.Context) error {
 		res := &models.Response{}
 
-		type coordinate struct {
-			Latitude  float64 `json:"latitude"`
-			Longitude float64 `json:"longitude"`
-		}
-
 		type req struct {
-			Coordinates []coordinate `json:"coordinates"`
+			DamId int `json:"dam_id"`
 		}
 
 		reqPayload := req{}
@@ -80,11 +76,24 @@ func InitiateRequest(db database.Database, cache database.Cache) echo.HandlerFun
 			return c.JSON(http.StatusBadRequest, res)
 		}
 
-		jsonPayload, _ := json.Marshal(&reqPayload)
+		cmdCoords, err := db.GetCommandCoordinatesByDamId(c.Request().Context(), reqPayload.DamId)
+		if err != nil {
+			res.Message = err.Error()
+			return c.JSON(http.StatusInternalServerError, res)
+		}
+
+		reqPay := map[string]any{
+			"coordinates": cmdCoords,
+		}
+
+		jsonPayload, _ := json.Marshal(&reqPay)
 
 		body := bytes.NewReader(jsonPayload)
 
-		resp, err := http.Post("http://localhost:5000/area", "application/json", body)
+		client := http.Client{}
+		client.Timeout = 0
+
+		resp, err := client.Post("http://localhost:5000/area", "application/json", body)
 		if err != nil {
 			res.Message = err.Error()
 			return c.JSON(http.StatusInternalServerError, res)
