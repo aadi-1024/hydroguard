@@ -184,6 +184,46 @@ func ProcessRequest(db database.Database, cache database.Cache) echo.HandlerFunc
 			efficientWaterContrib[k] += (cropWaterReq[k].TotalEtc / 1000) * area * v
 		}
 
+		optimalWaterUsage := float64(0)
+		msg := ""
+		for k, v := range efficientWaterContrib {
+			if cropWaterReq[k].Drip {
+				//assuming drip has an efficiency of 90%
+				msg += fmt.Sprintf("Can switch %v to drip. ", k)
+				optimalWaterUsage += v * 1.11
+			} else if cropWaterReq[k].Sprinkler {
+				//assuming sprinkler has an efficiency of 75%
+				msg += fmt.Sprintf("Can switch %v to sprinkler. ", k)
+				optimalWaterUsage += v * 1.33
+			} else {
+				msg += "Unfortunately already at best efficiency. "
+				optimalWaterUsage += v * 2
+			}
+		}
+
+
+		//calculating water savings in given configuration
+		msg2 := ""
+		waterGivenConfig := float64(0)
+		for _, v := range reqPayload.Crops {
+			log.Println(waterGivenConfig)
+			if v.IrrigationType == "drip" {
+				if cropWaterReq[v.CropType].Drip {
+					waterGivenConfig += float64(v.LandCover) * area * cropWaterReq[v.CropType].TotalEtc * 1.11 / 1000
+				} else {
+					msg2 += fmt.Sprintf("Can't switch %v to drip", v.CropType)
+				}
+			} else if v.IrrigationType == "sprinkler" {
+				if cropWaterReq[v.CropType].Sprinkler {
+					waterGivenConfig += float64(v.LandCover) * area * cropWaterReq[v.CropType].TotalEtc * 1.33 / 1000
+				} else {
+					msg2 += fmt.Sprintf("Can't switch %v to drip", v.CropType)
+				}
+			} else {
+				waterGivenConfig += float64(v.LandCover) * area * cropWaterReq[v.CropType].TotalEtc * 2 / 1000
+			}
+		}
+
 		// Seepage and evaporation calculations
 		cValue, err := getCValue(reqPayload.SoilType)
 		if err != nil {
@@ -199,20 +239,24 @@ func ProcessRequest(db database.Database, cache database.Cache) echo.HandlerFunc
 		// Response structure
 		type jsonRes struct {
 			CropWaterRequirement float64 `json:"crop_water_requirement"`
+			WaterGivenConfig     float64 json:"water_given_config"
 			SeepageLosses        float64 `json:"seepage_losses"`
 			EvaporationDischarge float64 `json:"evaporation_discharge"`
 			CanalLosses          float64 `json:"canal_losses"`
 			OptimalWaterUsage    float64 `json:"optimal_water_usage"`
 			Suggestions          string  `json:"suggestions"`
+			ConfigErrors         string  json:"config_errors"
 		}
 
 		data := jsonRes{
 			CropWaterRequirement: waterReq,
+			WaterGivenConfig:     waterGivenConfig,
 			SeepageLosses:        seepageLosses,
 			EvaporationDischarge: evaporationDischarge,
 			CanalLosses:          canalLosses,
-			OptimalWaterUsage:    0, // Placeholder for optimal water usage
-			Suggestions:          "", // Placeholder for suggestions
+			OptimalWaterUsage:    optimalWaterUsage,
+			Suggestions:          msg
+			ConfigErrors:         msg2
 		}
 	
 		
