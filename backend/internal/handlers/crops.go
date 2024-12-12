@@ -7,6 +7,7 @@ import (
 	"hydroguard/internal/database"
 	"hydroguard/internal/models"
 	"io"
+	"log"
 	"math/rand/v2"
 	"net/http"
 	"strconv"
@@ -131,16 +132,16 @@ func ProcessRequest(db database.Database, cache database.Cache) echo.HandlerFunc
 		msg := ""
 		for k, v := range efficientWaterContrib {
 			if cropWaterReq[k].Drip {
-				//assuming drip has an efficiency of 70%
+				//assuming drip has an efficiency of 90%
 				msg += fmt.Sprintf("Can switch %v to drip. ", k)
-				optimalWaterUsage += v * 1.42
+				optimalWaterUsage += v * 1.11
 			} else if cropWaterReq[k].Sprinkler {
-				//assuming sprinkler has an efficiency of 50%
+				//assuming sprinkler has an efficiency of 75%
 				msg += fmt.Sprintf("Can switch %v to sprinkler. ", k)
-				optimalWaterUsage += v * 2
+				optimalWaterUsage += v * 1.33
 			} else {
 				msg += "Unfortunately already at best efficiency. "
-				optimalWaterUsage += v * 3.34
+				optimalWaterUsage += v * 2
 			}
 		}
 
@@ -148,20 +149,21 @@ func ProcessRequest(db database.Database, cache database.Cache) echo.HandlerFunc
 		msg2 := ""
 		waterGivenConfig := float64(0)
 		for _, v := range reqPayload.Crops {
+			log.Println(waterGivenConfig)
 			if v.IrrigationType == "drip" {
 				if cropWaterReq[v.CropType].Drip {
-					waterGivenConfig += float64(v.LandCover) * area * cropWaterReq[v.CropType].TotalEtc * 1.42
+					waterGivenConfig += float64(v.LandCover) * area * cropWaterReq[v.CropType].TotalEtc * 1.11 / 1000
 				} else {
 					msg2 += fmt.Sprintf("Can't switch %v to drip", v.CropType)
 				}
 			} else if v.IrrigationType == "sprinkler" {
 				if cropWaterReq[v.CropType].Sprinkler {
-					waterGivenConfig += float64(v.LandCover) * area * cropWaterReq[v.CropType].TotalEtc * 2
+					waterGivenConfig += float64(v.LandCover) * area * cropWaterReq[v.CropType].TotalEtc * 1.33 / 1000
 				} else {
 					msg2 += fmt.Sprintf("Can't switch %v to drip", v.CropType)
 				}
 			} else {
-				waterGivenConfig += float64(v.LandCover) * area * cropWaterReq[v.CropType].TotalEtc * 3.34
+				waterGivenConfig += float64(v.LandCover) * area * cropWaterReq[v.CropType].TotalEtc * 2 / 1000
 			}
 		}
 
