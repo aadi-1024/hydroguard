@@ -10,6 +10,7 @@ import (
 	"math/rand/v2"
 	"net/http"
 	"strconv"
+	"time"
 
 	"encoding/csv"
 	"os"
@@ -108,10 +109,21 @@ func InitiateRequest(db database.Database, cache database.Cache) echo.HandlerFun
 		area, _ := strconv.ParseFloat(string(retBody), 64)
 		num := rand.IntN(899) + 100
 
+		data := map[string]any{
+			"area": area,
+			"id":   reqPayload.DamId,
+		}
+
+		dataB, err := json.Marshal(&data)
+		if err != nil {
+			res.Message = err.Error()
+			return c.JSON(http.StatusInternalServerError, res)
+		}
+
 		//replace with userid later
 		cache.Conn.Add(&memcache.Item{
 			Key:        strconv.Itoa(num),
-			Value:      []byte(strconv.FormatFloat(area, 'f', 6, 64)),
+			Value:      dataB,
 			Expiration: 1800,
 		})
 
@@ -173,7 +185,10 @@ func ProcessRequest(db database.Database, cache database.Cache) echo.HandlerFunc
 			res.Message = err.Error()
 			return c.JSON(http.StatusBadRequest, res)
 		}
-		area, _ := strconv.ParseFloat(string(item.Value), 64)
+
+		dat := make(map[string]any)
+		json.Unmarshal(item.Value, &dat)
+		area := dat["area"].(float64)
 
 		cropShare := make(map[string]float64)
 		for _, v := range reqPayload.Crops {
@@ -204,12 +219,10 @@ func ProcessRequest(db database.Database, cache database.Cache) echo.HandlerFunc
 			}
 		}
 
-
 		//calculating water savings in given configuration
 		msg2 := ""
 		waterGivenConfig := float64(0)
 		for _, v := range reqPayload.Crops {
-			log.Println(waterGivenConfig)
 			if v.IrrigationType == "drip" {
 				if cropWaterReq[v.CropType].Drip {
 					waterGivenConfig += float64(v.LandCover) * area * cropWaterReq[v.CropType].TotalEtc * 1.11 / 1000
@@ -239,26 +252,22 @@ func ProcessRequest(db database.Database, cache database.Cache) echo.HandlerFunc
 		// Canal loss calculations
 		canalLosses := calculateCanalLosses(waterReq, reqPayload.CanalType)
 
-		// Response structure
-		type jsonRes struct {
-			CropWaterRequirement float64 `json:"crop_water_requirement"`
-			WaterGivenConfig     float64 json:"water_given_config"
-			SeepageLosses        float64 `json:"seepage_losses"`
-			EvaporationDischarge float64 `json:"evaporation_discharge"`
-			CanalLosses          float64 `json:"canal_losses"`
-			OptimalWaterUsage    float64 `json:"optimal_water_usage"`
-			Suggestions          string  `json:"suggestions"`
-			ConfigErrors         string  json:"config_errors"
-		}
-
-		data := jsonRes{
+		data := models.CropAnalysis{
+			DamId:                dat["dam_id"].(int),
+			CreatedAt:            time.Now(),
 			CropWaterRequirement: waterReq + evaporationDischarge + seepageLosses,
 			SeepageLosses:        seepageLosses,
 			EvaporationDischarge: evaporationDischarge,
 			CanalLosses:          canalLosses,
 			OptimalWaterUsage:    optimalWaterUsage,
-			Suggestions:          msg
-			ConfigErrors:         msg2
+			Suggestions:          msg,
+			ConfigErrors:         msg2,
+		}
+
+		data, err = db.CreateCropAnalysis(c.Request().Context(), data)
+		if err != nil {
+			res.Message = err.Error()
+			return c.JSON(http.StatusInternalServerError, res)
 		}
 
 		res.Message = "successful"

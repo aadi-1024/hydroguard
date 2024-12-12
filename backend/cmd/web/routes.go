@@ -36,4 +36,8 @@ func SetupRoutes(e *echo.Echo) {
 	crops := e.Group("/crops")
 	crops.POST("/init", handlers.InitiateRequest(app.db, app.cache))
 	crops.POST("/process", handlers.ProcessRequest(app.db, app.cache))
+	crops.GET("/analysis", handlers.GetAllCropAnalysis(app.db))
+	crops.GET("/analysis/:id", handlers.GetCropAnalysisById(app.db))
+	crops.GET("/analysis/dam/:id", handlers.GetCropAnalysisByDamId(app.db))
+	crops.POST("/analysis", handlers.CreateCropAnalysis(app.db))
 }
