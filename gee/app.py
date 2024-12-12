@@ -57,6 +57,26 @@ def pop():
 
     return str(ee.Number(total_population).getInfo())
 
+
+def preprocess_data(df):
+    # Create a copy of the dataframe to avoid modification warnings
+    data = df.copy()
+
+    # Encode categorical variables
+    data['irrigation_encoded'] = data['irrigation'].map(IRRIGATION_EFFICIENCY)
+
+    # One-hot encode crop and season
+    data['crop_encoded'] = pd.Categorical(data['crop']).codes
+    data['season_encoded'] = pd.Categorical(data['season']).codes
+
+    # Calculate adjusted water parameters based on irrigation efficiency
+    data['adjusted_l1'] = data['l1'] * data['irrigation_encoded']
+    data['adjusted_l2'] = data['l2'] * data['irrigation_encoded']
+    data['adjusted_l4'] = data['l4'] * data['irrigation_encoded']
+
+    return data
+
+
 @app.post('/area')
 def area():
     data = request.get_json(force=True)
@@ -69,7 +89,7 @@ def area():
 from flask import Flask, request, jsonify
 import numpy as np
 import pandas as pd
-
+import pickle
 # Assuming the model is loaded and available as `best_model`
 # and preprocess_data() is already defined as in your code
 
@@ -83,7 +103,8 @@ IRRIGATION_EFFICIENCY = {
 }
 
 # Load the model (You would load your trained model here)
-# For example: best_model = joblib.load('best_model.pkl')
+with open('./irr.bin', 'rb') as model_file:
+    best_model = pickle.load(model_file)
 
 # Function to process input JSON and make prediction
 def process_input(json_data):
@@ -101,6 +122,24 @@ def process_input(json_data):
     etc = json_data.get('etc')
     total_etc = json_data.get('total_etc')
     irrigation_method = json_data.get('irrigation_method')
+
+    pd = pd.DataFrame([{
+    "crop": crop,
+    "season": season,
+    "l1": l1,
+    "l2": l2,
+    "l4": l4,
+    "total": total,
+    "kc1": kc1,
+    "kc2": kc2,
+    "kc3": kc3,
+    "eto": eto,
+    "etc": etc,
+    "total_etc": total_etc,
+    "irrigation_method": irrigation_method
+    }])
+
+    pd = preprocess_data(pd)
 
     # Encode inputs
     crop_encoded = pd.Categorical([crop], categories=processed_df['crop'].unique()).codes[0]
