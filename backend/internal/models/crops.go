@@ -9,12 +9,12 @@ type Crop struct {
 	L3        int     `json:"l3"`
 	L4        int     `json:"l4"`
 	Total     int     `json:"total"`
-	Kc1       float32 `json:"kc1"`
-	Kc2       float32 `json:"kc2"`
-	Kc3       float32 `json:"kc3"`
-	Eto       float32 `json:"eto"`
-	Etc       float32 `json:"etc"`
-	TotalEtc  float32 `json:"total_etc"`
+	Kc1       float64 `json:"kc1"`
+	Kc2       float64 `json:"kc2"`
+	Kc3       float64 `json:"kc3"`
+	Eto       float64 `json:"eto"`
+	Etc       float64 `json:"etc"`
+	TotalEtc  float64 `json:"total_etc"`
 	Drip      bool    `json:"drip"`
 	Sprinkler bool    `json:"sprinkler"`
 }
