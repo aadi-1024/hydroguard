@@ -12,9 +12,9 @@ const prediction = () => {
       noValidate
       autoComplete="off">
       <h1 className='hed'>Enter Details</h1>
-      <TextField id="outlined-basic" label="Outlined" variant="outlined" sx={{background:'white'}}/>
-      <TextField id="outlined-basic" label="Outlined" variant="outlined" sx={{background:'white'}}/>
-      <TextField id="outlined-basic" label="Outlined" variant="outlined" sx={{background:'white'}}/>
+      <TextField id="outlined-basic" label="Input" variant="outlined" sx={{background:'white'}}/>
+      <TextField id="outlined-basic" label="Input" variant="outlined" sx={{background:'white'}}/>
+      <TextField id="outlined-basic" label="Input" variant="outlined" sx={{background:'white'}}/>
       
 
     </Box>

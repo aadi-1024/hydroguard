@@ -17,6 +17,7 @@
 }
 .states
 {
+    fill: rgb(51, 26, 109);
     stroke: white;
     stroke-width: 1;
 }

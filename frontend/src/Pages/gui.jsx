@@ -1,7 +1,9 @@
-import { MapContainer, TileLayer, GeoJSON, Marker, Popup } from "react-leaflet";
+import { MapContainer, TileLayer, GeoJSON, Marker, Popup, FeatureGroup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
+import "leaflet-draw/dist/leaflet.draw.css";
 import indiaGeoJson from "../assets/akhandbharat.json";
 import indiaStatesGeoJson from "../assets/chal.json";
+import { EditControl } from "react-leaflet-draw";
 import L from "leaflet";
 import "./gui.css";
 import { useNavigate } from "react-router-dom";
@@ -10,6 +12,8 @@ import axios from "axios";
 
 const Gui = () => {
   const [coordinates, setCoordinates] = useState([]);
+  const [polygonCoordinates, setPolygonCoordinates] = useState([]);
+  const [polygonSelected, setPolygonSelected] = useState(false);
   const worldBounds = [
     [-90, -180],
     [-90, 180],
@@ -37,36 +41,18 @@ const Gui = () => {
             ...indiaGeoJson.features.flatMap((f) =>
               f.geometry.type === "Polygon"
                 ? f.geometry.coordinates
-                : f.geometry.coordinates.flat() 
+                : f.geometry.coordinates.flat()
             ),
-          
-            
-            
-
           ],
         },
       },
     ],
   };
 
-  const onStateClick = (event) => {
-    const bounds = event.target.getBounds();
-    console.log("State clicked. Bounds: ", bounds);
-    event.target._map.fitBounds(bounds, { padding: [50, 50] });
-  };
-
-  const onEachState = (feature, layer) => {
-    console.log("Feature:", feature);
-    layer.on({
-      click: onStateClick,
-    });
-  };
-
   const indiaBounds = [
     [11.462, 68.174],
     [35.676, 97.395],
   ];
-
   const navigate = useNavigate();
 
   const fetchCoordinates = async () => {
@@ -85,6 +71,21 @@ const Gui = () => {
     } catch (error) {
       console.error("Error fetching coordinates:", error);
     }
+  };
+
+  const handlePolygonCreated = (e) => {
+    const layer = e.layer; // Access the drawn polygon
+    if (layer instanceof L.Polygon) {
+      const latLngs = layer.getLatLngs()[0]; // Get the coordinates of the polygon
+      const coordinates = latLngs.map((latLng) => [latLng.lat, latLng.lng]);
+      setPolygonCoordinates(coordinates);
+      setPolygonSelected(true);
+      console.log("Polygon Coordinates:", coordinates);
+    }
+  };
+
+  const handleNavigate = () => {
+    navigate(`/polygon-view?coordinates=${encodeURIComponent(JSON.stringify(polygonCoordinates))}`);
   };
 
   return (
@@ -107,11 +108,19 @@ const Gui = () => {
           />
 
           <GeoJSON data={mask} style={styleMask} />
-          <GeoJSON className="ind" data={indiaGeoJson} />
+          <GeoJSON className="ind" data={indiaGeoJson} sx={{ fillColor: "rgb(51, 26, 109);" }} />
           <GeoJSON
             className="states"
             data={indiaStatesGeoJson}
-            onEachFeature={onEachState}
+            onEachFeature={(feature, layer) =>
+              layer.on({
+                click: (e) => {
+                  const bounds = e.target.getBounds();
+                  console.log("State clicked. Bounds:", bounds);
+                  e.target._map.fitBounds(bounds, { padding: [50, 50] });
+                },
+              })
+            }
           />
 
           {coordinates.map((coord, index) => (
@@ -135,11 +144,53 @@ const Gui = () => {
               </Popup>
             </Marker>
           ))}
+          
           <button
             style={{
               position: "absolute",
               top: "18px",
-              right: "60px",
+              right: "40px",
+              backgroundColor: "#274C77",
+              color: "white",
+              border: "none",
+              padding: "13px 13px",
+              cursor: "pointer",
+              width:'12vw',
+              borderRadius: "5px",
+              zIndex: 1000,
+            }}
+            onClick={fetchCoordinates}
+          >
+            Get Coordinates
+          </button>
+          
+          {/* FeatureGroup for Drawing */}
+          <FeatureGroup>
+            <EditControl
+              onCreated={handlePolygonCreated}
+              draw={{
+                rectangle: false,
+                circle: false,
+                marker: false,
+                polyline: false,
+                circlemarker: false,
+                polygon: {
+                  allowIntersection: false, // Prevent self-intersecting polygons
+                  shapeOptions: {
+                    color: "yellow",
+                  },
+                },
+              }}
+            
+            />
+          </FeatureGroup>
+          {polygonSelected && (
+          <button
+            style={{
+              position: "absolute",
+              top: "10vh",
+              right: "40px",
+              width:'12vw',
               backgroundColor: "#274C77",
               color: "white",
               border: "none",
@@ -148,11 +199,28 @@ const Gui = () => {
               borderRadius: "5px",
               zIndex: 1000,
             }}
-            onClick={fetchCoordinates}
+            onClick={handleNavigate}
           >
-            Get Coordinates
+            View Polygon Details
           </button>
+        )}
+         
         </MapContainer>
+
+        
+
+        {polygonCoordinates.length > 0 && (
+          <div>
+            <h3 style={{color:'#274C77'}}>Polygon Coordinates:</h3>
+            <ul >
+              {polygonCoordinates.map((coord, index) => (
+                <li key={index} style={{color:'#274C77'}}>
+                  {coord[0]}, {coord[1]}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
     </div>
   );
