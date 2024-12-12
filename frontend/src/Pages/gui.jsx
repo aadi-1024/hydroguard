@@ -87,7 +87,7 @@ const Gui = () => {
 
   const handleNavigate = () => {
     console.log("Polygon Coordinates:", coordinates);
-    navigate(`/polygon/coordinates=${encodeURIComponent(JSON.stringify(polygonCoordinates))}`);
+    navigate(`/polygon/coordinates=${encodeURIComponent(JSON.stringify(polygonCoordinates))}&id={}`);
 
   };
 

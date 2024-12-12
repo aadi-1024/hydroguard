@@ -60,7 +60,7 @@ function App() {
       element: <Right/>
     },
     {
-      path:'/polygon/:id',
+      path:'/polygon/:coordinates',
       element: <><Sidebar/><Cords/><Right/> <MyChatBot/></>
     },
     {

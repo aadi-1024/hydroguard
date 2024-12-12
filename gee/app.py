@@ -1,4 +1,8 @@
 from flask import Flask, request, jsonify
+import numpy as np
+import pandas as pd
+import pickle
+
 import ee
 
 ee.Initialize(credentials=ee.ServiceAccountCredentials('hydroguard-backend@hydroguard-testing.iam.gserviceaccount.com', 'key.json')
@@ -86,15 +90,6 @@ def area():
     area = ee.Geometry.Polygon(coords).area()
     return str(ee.Number(area).getInfo())
 
-from flask import Flask, request, jsonify
-import numpy as np
-import pandas as pd
-import pickle
-# Assuming the model is loaded and available as `best_model`
-# and preprocess_data() is already defined as in your code
-
-app = Flask(__name__)
-
 # Irrigation Efficiency Constants
 IRRIGATION_EFFICIENCY = {
     'flood': 0.60,    # 60% efficiency
@@ -103,7 +98,7 @@ IRRIGATION_EFFICIENCY = {
 }
 
 # Load the model (You would load your trained model here)
-with open('./irr.bin', 'rb') as model_file:
+with open('./irrr.bin', 'rb') as model_file:
     best_model = pickle.load(model_file)
 
 # Function to process input JSON and make prediction
@@ -121,9 +116,9 @@ def process_input(json_data):
     eto = json_data.get('eto')
     etc = json_data.get('etc')
     total_etc = json_data.get('total_etc')
-    irrigation_method = json_data.get('irrigation_method')
+    irrigation = json_data.get('irrigation_method')
 
-    pd = pd.DataFrame([{
+    p = pd.DataFrame([{
     "crop": crop,
     "season": season,
     "l1": l1,
@@ -136,17 +131,17 @@ def process_input(json_data):
     "eto": eto,
     "etc": etc,
     "total_etc": total_etc,
-    "irrigation_method": irrigation_method
+    "irrigation": irrigation
     }])
 
-    pd = preprocess_data(pd)
+    p = preprocess_data(p)
 
     # Encode inputs
-    crop_encoded = pd.Categorical([crop], categories=processed_df['crop'].unique()).codes[0]
-    season_encoded = pd.Categorical([season], categories=processed_df['season'].unique()).codes[0]
+    crop_encoded = pd.Categorical([crop], categories=p['crop'].unique()).codes[0]
+    season_encoded = pd.Categorical([season], categories=p['season'].unique()).codes[0]
 
     # Get irrigation efficiency
-    irrigation_efficiency = IRRIGATION_EFFICIENCY.get(irrigation_method, 1.0)
+    irrigation_efficiency = IRRIGATION_EFFICIENCY.get(irrigation, 1.0)
 
     # Adjust water parameters
     adjusted_l1 = l1 * irrigation_efficiency

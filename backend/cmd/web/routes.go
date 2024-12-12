@@ -43,5 +43,5 @@ func SetupRoutes(e *echo.Echo) {
 	crops.GET("/analysis/dam/:id", handlers.GetCropAnalysisByDamId(app.db))
 	crops.POST("/analysis", handlers.CreateCropAnalysis(app.db))
 
-	e.POST("/canals", handlers.PredictCanalStuff(app.db))
+	e.POST("/canal", handlers.PredictCanalStuff(app.db))
 }
