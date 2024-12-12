@@ -1,11 +1,10 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
-import { Typography, Box, Paper} from "@mui/material";
+import { Typography, Box, Paper } from "@mui/material";
 import "./dam.css";
 import SessionsChart from "../components/sessionchart";
-
-import GovindSagar from "../assets/givind_sagar.jpeg"
+// import { Grid } from "@mui/system";
 
 const Dam = () => {
   const { damId } = useParams();
@@ -64,17 +63,29 @@ const Dam = () => {
 
       {!loading && damData && waterCover && (
         <>
-          <div className="graph1">{waterCover.length > 0 && <SessionsChart d={waterCover} order={waterCover[0] > waterCover[waterCover.length - 1] ? 'Increasing' : 'Decreasing'} h={150} w={800}/>}</div>
-          {volume.length > 0 && <SessionsChart d={volume} order={volume[0] > volume[volume.length - 1] ? 'Increasing' : 'Decreasing'} h={150} w='25%' />}
-          {sedimentation.length > 0 && <SessionsChart d={sedimentation} order={sedimentation[0] > sedimentation[sedimentation.length - 1] ? 'Increasing' : 'Decreasing'} h={150} w='25%' />}
+          <Box sx={{display:"flex", alignItems:'centre',flexWrap:"wrap", width:"55vw",gap:'1vw'}}> 
+          {waterCover.length > 0 && <SessionsChart d={waterCover} order={waterCover[0] > waterCover[waterCover.length - 1] ? 'Increasing' : 'Decreasing'} h={150} w='52vw' position='center' />}
+          {volume.length > 0 && <SessionsChart d={volume} order={volume[0] > volume[volume.length - 1] ? 'Increasing' : 'Decreasing'} h={150} w='23vw' />}
+          {sedimentation.length > 0 && <SessionsChart d={sedimentation} order={sedimentation[0] > sedimentation[sedimentation.length - 1] ? 'Increasing' : 'Decreasing'} h={150} w='28vw' />}
+          </Box>
           <Box className="Boxy">
-            {/* <Paper className="dam-box" sx={{ borderRadius: "20px" }}>
+            <Paper className="dam-box" sx={{ borderRadius: "20px" }}>
               <Typography className="typography-title" variant="h6">
                 Name:
               </Typography>
               <Typography className="typography-content">
                 {damData.name || "N/A"}
               </Typography>
+              <Typography className="typography-title" variant="h6">
+                GrossVolume:
+              </Typography>
+              <Typography className="typography-content">
+                {damData.gross_volume || "N/A"}
+              </Typography>
+              
+            </Paper>
+            <Paper className="dam-box" sx={{ borderRadius: "20px" }}>
+              
               <Typography className="typography-title" variant="h6">
                 Latitude:
               </Typography>
@@ -86,14 +97,6 @@ const Dam = () => {
               </Typography>
               <Typography className="typography-content">
                 {damData.longitude || "N/A"}
-              </Typography>
-            </Paper>
-            <Paper className="dam-box" sx={{ borderRadius: "20px" }}>
-              <Typography className="typography-title" variant="h6">
-                GrossVolume:
-              </Typography>
-              <Typography className="typography-content">
-                {damData.gross_volume || "N/A"}
               </Typography>
             </Paper>
           </Box>
@@ -120,60 +123,7 @@ const Dam = () => {
               <Typography className="typography-content">
                 {damData.last_maintenance || "N/A"}
               </Typography>
-            </Paper> */}
-            <Paper  elevation ={3} className="dam-data" sx={{ padding:2, borderRadius: "20px" }}>
-            <Typography className="typography-title" variant="h6" color="navyblue" style={{ fontWeight: 'bold' }}>
-                Name:
-              </Typography>
-              <Typography className="typography-content" variant="h6">
-                {damData.name || "N/A"}
-              </Typography>
-              <Typography className="typography-title" variant="h6" color="navyblue" style={{ fontWeight: 'bold' }}>
-                Latitude:
-              </Typography>
-              <Typography className="typography-content" variant="h6">
-                {damData.latitude || "N/A"}
-              </Typography>
-              <Typography className="typography-title" variant="h6" color="navyblue" style={{ fontWeight: 'bold' }}>
-                Longitude:
-              </Typography>
-              <Typography className="typography-content" variant="h6" style={{ fontWeight: 'bold' }}>
-                {damData.longitude || "N/A"}
-              </Typography>
-              <Typography className="typography-title" variant="h6" color="navyblue" style={{ fontWeight: 'bold' }}>
-                GrossVolume:
-              </Typography>
-              <Typography className="typography-content" variant="h6">
-                {damData.gross_volume || "N/A"}
-              </Typography>
-              <Typography className="typography-title" variant="h6" color="navyblue" style={{ fontWeight: 'bold' }}>
-                Mean Depth:
-              </Typography>
-              <Typography className="typography-content" variant="h6">
-                {damData.mean_depth || "N/A"}
-              </Typography>
-              <Typography className="typography-title" variant="h6" color="navyblue" style={{ fontWeight: 'bold' }}>
-                Status:
-              </Typography>
-              <Typography className="typography-content" variant="h6">
-                {damData.status || "N/A"}
-              </Typography>
-              <Typography className="typography-title" variant="h6" color="navyblue" style={{ fontWeight: 'bold' }}>
-                Last Maintenance:
-              </Typography>
-              <Typography className="typography-content" variant="h6">
-                {damData.last_maintenance || "N/A"}
-              </Typography>
-              
             </Paper>
-            <Box>
-
-              <img src={GovindSagar} alt="Govind Sagar" style={{ height: 300,paddingLeft:20, borderRadius:20}}  />
-
-</Box>
-            
-
-            
           </Box>
         </>
       )}

@@ -1,5 +1,4 @@
 package handlers
-package main
 
 import (
 	"bytes"
@@ -8,18 +7,14 @@ import (
 	"hydroguard/internal/database"
 	"hydroguard/internal/models"
 	"io"
-	"log"
 	"math/rand/v2"
 	"net/http"
 	"strconv"
 
+	"encoding/csv"
 	"github.com/bradfitz/gomemcache/memcache"
 	"github.com/labstack/echo/v4"
-	"encoding/csv"
-	"fmt"
 	"os"
-	"strconv"
-
 )
 
 // Function to read C value from c-values.csv
@@ -64,7 +59,6 @@ func calculateCanalLosses(totalLoss float64, canalType string) float64 {
 
 	return losses
 }
-
 
 func InitiateRequest(db database.Database, cache database.Cache) echo.HandlerFunc {
 	return func(c echo.Context) error {
@@ -148,9 +142,9 @@ func ProcessRequest(db database.Database, cache database.Cache) echo.HandlerFunc
 		}
 
 		type req struct {
-			Token string  `json:"token"`
-			Rain  float32 `json:"rain"`
-			Crops []crop  `json:"crops"`
+			Token     string  `json:"token"`
+			Rain      float32 `json:"rain"`
+			Crops     []crop  `json:"crops"`
 			SoilType  string  `json:"soil_type"`
 			CanalArea float64 `json:"canal_area"`
 			Depth     float64 `json:"depth"`
@@ -249,8 +243,7 @@ func ProcessRequest(db database.Database, cache database.Cache) echo.HandlerFunc
 		}
 
 		data := jsonRes{
-			CropWaterRequirement: waterReq,
-			WaterGivenConfig:     waterGivenConfig,
+			CropWaterRequirement: waterReq + evaporationDischarge + seepageLosses,
 			SeepageLosses:        seepageLosses,
 			EvaporationDischarge: evaporationDischarge,
 			CanalLosses:          canalLosses,
@@ -258,8 +251,6 @@ func ProcessRequest(db database.Database, cache database.Cache) echo.HandlerFunc
 			Suggestions:          msg
 			ConfigErrors:         msg2
 		}
-	
-		
 
 		res.Message = "successful"
 		res.Data = data

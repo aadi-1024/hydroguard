@@ -26,7 +26,7 @@ func InitDB(dsn string, timeout time.Duration) (Database, error) {
 
 	db.conn = conn
 	db.timeout = timeout
-	err = conn.AutoMigrate(&models.Dam{}, &models.Notification{}, &models.Coordinate{}, &models.User{}, &models.Analysis{}, &models.NotificationsRead{}, &models.Crop{})
+	err = conn.AutoMigrate(&models.Dam{}, &models.Notification{}, &models.Coordinate{}, &models.User{}, &models.Analysis{}, &models.NotificationsRead{}, &models.Crop{}, &models.CommandCoordinate{})
 	return db, err
 }
 
