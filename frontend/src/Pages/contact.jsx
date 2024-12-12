@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import DetailsBar from './detailsbar';
+import InputSide from './inputside';
 
 const PageWrapper = styled.div`
   display: flex;
@@ -19,10 +20,12 @@ const PageHeadingWrapper = styled.div`
 
 const FormContainer = styled.div`
   width: 70%;
+  display : flex;
   background-color: #fff;
   padding: 5px;
+  padding-left: 20vw;
   border-radius: 5px;
-  height: 70vh;
+  height: 75vh;
   @media (max-width: 768px) {
     width: 90%;
   }
@@ -49,6 +52,7 @@ const FormPage = () => {
       </PageHeadingWrapper>
       <FormContainer>
         <DetailsBar/>
+        <InputSide/>
       </FormContainer>
     </PageWrapper>
   );
