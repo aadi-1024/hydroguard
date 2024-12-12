@@ -1,27 +1,25 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import { Box, Typography, Card, CardContent, Button, CircularProgress } from '@mui/material';
+import { Box, Typography, Card, CardContent, Button, CircularProgress, TextField, MenuItem, Select, InputLabel, FormControl } from '@mui/material';
 
 const Cordinates = () => {
   const { coordinates } = useParams();
   const [data, setData] = useState(null);
-  const [processData, setProcessData] = useState(null); // State to store the second request's data
+  const [processData, setProcessData] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [cropType, setCropType] = useState('wheat');
+  const [irrigationType, setIrrigationType] = useState('drip');
+  const [landCover, setLandCover] = useState('');
+  const [rain, setRain] = useState(''); // state for rainfall input
 
   useEffect(() => {
     const handleLoad = async () => {
       try {
         setLoading(true);
-        console.log("Raw coordinates:", coordinates);
-
-        // Remove "coordinates=" from the start of the parameter (if it's part of the URL)
         const coordinateString = coordinates.replace(/^coordinates=/, "");
-
-        // Decode and parse the coordinate array
         const coordinateArray = JSON.parse(decodeURIComponent(coordinateString));
-        console.log('Parsed coordinates:', coordinateArray);
 
         const payload = {
           coordinates: coordinateArray.map(coord => ({
@@ -30,54 +28,14 @@ const Cordinates = () => {
           }))
         };
 
-        // First request to '/crops/init'
-        const initResponse = await axios.post(
-          'http://127.0.0.1:8080/crops/init', 
-          payload,
-          {
-            headers: {
-              'Content-Type': 'application/json'
-            }
+        const initResponse = await axios.post('http://127.0.0.1:8080/crops/init', payload, {
+          headers: {
+            'Content-Type': 'application/json'
           }
-        );
+        });
 
-        console.log(initResponse.data);
         setData(initResponse.data);
-
-        // Second request to '/crops/process' with the received token
-        const cropsData = [
-          {
-            crop_type: 'wheat',
-            irrigation_type: 'drip',
-            land_cover: 0.7
-          },
-          {
-            crop_type: 'rice',
-            irrigation_type: 'flood',
-            land_cover: 0.9
-          }
-        ];
-
-        const processPayload = {
-          token: initResponse.data.data?.token, // Use the token received from the first request
-          rain: 200, // Example rainfall value, adjust based on your needs
-          crops: cropsData
-        };
-
-        const processResponse = await axios.post(
-          'http://127.0.0.1:8080/crops/process', 
-          processPayload,
-          {
-            headers: {
-              'Content-Type': 'application/json'
-            }
-          }
-        );
-
-        console.log(processResponse.data);
-        setProcessData(processResponse.data); // Set the second request's data
       } catch (error) {
-        console.error('Error fetching data:', error);
         setError(error);
       } finally {
         setLoading(false);
@@ -89,11 +47,46 @@ const Cordinates = () => {
     }
   }, [coordinates]);
 
+  const handleProcessSubmit = async () => {
+    try {
+      setLoading(true);
+      // Construct process payload
+      const processPayload = {
+        token: data?.data?.token,
+        rain: parseFloat(rain), // Use the rain value from the state
+        crops: [
+          {
+            crop_type: cropType,
+            irrigation_type: irrigationType,
+            land_cover: parseFloat(landCover)
+          }
+        ]
+      };
+
+      // Log the payload to ensure it's correct
+      console.log('Process Payload:', processPayload);
+
+      // Sending the request to /crops/process
+      const processResponse = await axios.post('http://127.0.0.1:8080/crops/process', processPayload, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      setProcessData(processResponse.data);
+    } catch (error) {
+      setError(error);
+      console.error('Error during processing:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   if (error) {
     return (
       <Box sx={{ padding: 2 }}>
         <Typography variant="h6" color="error">
-          Error: {error.message}
+          Error: {error?.response?.data?.message || error.message}
         </Typography>
       </Box>
     );
@@ -104,7 +97,7 @@ const Cordinates = () => {
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
-      width: '50vw',  // Adjusted to 50% of the viewport width
+      width: '50vw',
       flexDirection: 'column',
       overflowY: 'auto',
       padding: 2,
@@ -112,60 +105,130 @@ const Cordinates = () => {
     }}>
       <Box sx={{ width: '100%', padding: 2 }}>
         <Typography variant="h4" sx={{ color: '#274C77', marginBottom: 3, textAlign: 'center' }}>
-          Coordinate Analysis
+          Coordinate Analysis Results
         </Typography>
-        {loading ? (
+
+        {loading && !processData ? (
           <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
             <CircularProgress sx={{ color: '#274C77' }} />
           </Box>
-        ) : data ? (
+        ) : (
           <>
-            <Card sx={{ boxShadow: 3, borderRadius: 2, padding: 3, marginBottom: 2 }}>
-              <CardContent>
-                <Typography variant="h6" sx={{ color: '#274C77', marginBottom: 2 }}>
-                  Results from /crops/init:
-                </Typography>
-                <pre>{JSON.stringify(data, null, 2)}</pre>
-                <Box sx={{ marginTop: 2 }}>
-                  <Typography variant="body1" sx={{ color: '#274C77' }}>
-                    <strong>Area:</strong> {data.data?.area}
-                  </Typography>
-                  <Typography variant="body1" sx={{ color: '#274C77' }}>
-                    <strong>Token:</strong> {data.data?.token}
-                  </Typography>
-                  <Typography variant="body1" sx={{ color: '#274C77' }}>
-                    <strong>Weather:</strong> {data.data?.weather}
-                  </Typography>
-                </Box>
-              </CardContent>
-            </Card>
+            {data && (
+              <Card sx={{ boxShadow: 3, borderRadius: 2, padding: 3, marginBottom: 2 }}>
+                <CardContent>
+                  <Box >
+                    <Typography variant="body1" sx={{ color: '#274C77' }}>
+                      <strong>Area:</strong> {data.data?.area}
+                    </Typography>
+                    {/* <Typography variant="body1" sx={{ color: '#274C77',margin:'10px' }}>
+                      <strong>Token:</strong> {data.data?.token}
+                    </Typography>
+                     <Typography variant="body1" sx={{ color: '#274C77',margin:'10px' }}>
+                      This token Will 
+                    </Typography> */}
+                  </Box>
+                </CardContent>
+              </Card>
+            )}
 
-            {/* Display results from the second request */}
+            <Box sx={{ marginBottom: 2 }}>
+              <FormControl fullWidth sx={{ marginBottom: 2 }}>
+                <InputLabel id="crop-type-label">Crop Type</InputLabel>
+                <Select
+                  labelId="crop-type-label"
+                  value={cropType}
+                  onChange={(e) => setCropType(e.target.value)}
+                  label="Crop Type"
+                >
+                  <MenuItem value="wheat">Wheat</MenuItem>
+                  <MenuItem value="rice">Rice</MenuItem>
+                  <MenuItem value="corn">Corn</MenuItem>
+                  <MenuItem value="barley">Barley</MenuItem>
+                  <MenuItem value="millet">Millet</MenuItem>
+                  <MenuItem value="potato">Potato</MenuItem>
+                  <MenuItem value="cotton">Cotton</MenuItem>
+                  <MenuItem value="sugarcane">Sugarcane</MenuItem>
+                </Select>
+              </FormControl>
+
+              <FormControl fullWidth sx={{ marginBottom: 2 }}>
+                <InputLabel id="irrigation-type-label">Irrigation Type</InputLabel>
+                <Select
+                  labelId="irrigation-type-label"
+                  value={irrigationType}
+                  onChange={(e) => setIrrigationType(e.target.value)}
+                  label="Irrigation Type"
+                >
+                  <MenuItem value="drip">Drip</MenuItem>
+                  <MenuItem value="flood">Flood</MenuItem>
+                  <MenuItem value="sprinkler">Sprinkler</MenuItem>
+                </Select>
+              </FormControl>
+
+              <TextField
+                fullWidth
+                label="Land Cover"
+                type="number"
+                value={landCover}
+                onChange={(e) => setLandCover(e.target.value)}
+                sx={{ marginBottom: 2 }}
+              />
+
+              <TextField
+                fullWidth
+                label="Rain (mm)"
+                type="number"
+                value={rain}
+                onChange={(e) => setRain(e.target.value)}
+                sx={{ marginBottom: 2 }}
+              />
+
+              <Button
+                variant="contained"
+                color="primary"
+                sx={{ padding: '10px 20px', borderRadius: 3, bgcolor: '#274C77' }}
+                onClick={handleProcessSubmit}
+              >
+                Submit
+              </Button>
+            </Box>
+
+            {/* Display results from /crops/process */}
             {processData && (
               <Card sx={{ boxShadow: 3, borderRadius: 2, padding: 3 }}>
                 <CardContent>
                   <Typography variant="h6" sx={{ color: '#274C77', marginBottom: 2 }}>
                     Results from /crops/process:
                   </Typography>
-                  <pre>{JSON.stringify(processData, null, 2)}</pre>
+
                   <Box sx={{ marginTop: 2 }}>
                     <Typography variant="body1" sx={{ color: '#274C77' }}>
-                      <strong>Processed Data:</strong> {processData?.result}
+                      <strong>Water Requirement:</strong> {processData.data?.crop_water_requirement}
+                    </Typography>
+                    <Typography variant="body1" sx={{ color: '#274C77' }}>
+                      <strong>Water Configuration:</strong> {processData.data?.water_given_config}
+                    </Typography>
+                    <Typography variant="body1" sx={{ color: '#274C77' }}>
+                      <strong>Optimal Water Usage:</strong> {processData.data?.optimal_water_usage}
+                    </Typography>
+                    <Typography variant="body1" sx={{ color: '#274C77' }}>
+                      <strong>Suggestions:</strong> {processData.data?.suggestions}
+                    </Typography>
+                    <Typography variant="body1" sx={{ color: '#274C77' }}>
+                      <strong>Configuration Error:</strong> {processData.data?.config_errors}
                     </Typography>
                   </Box>
                 </CardContent>
               </Card>
             )}
           </>
-        ) : (
-          <Typography variant="body1" sx={{ color: '#274C77' }}>
-            Loading coordinate data...
-          </Typography>
         )}
+
         <Button
           variant="contained"
           color="primary"
-          sx={{ marginTop: 3, padding: '10px 20px', borderRadius: 3, display: 'block', margin: '20px auto',bgcolor:'#274C77' }}
+          sx={{ marginTop: 3, padding: '10px 20px', borderRadius: 3, display: 'block', margin: '20px auto', bgcolor: '#274C77' }}
           onClick={() => window.history.back()}
         >
           Go Back
@@ -173,6 +236,6 @@ const Cordinates = () => {
       </Box>
     </Box>
   );
-}
+};
 
 export default Cordinates;
