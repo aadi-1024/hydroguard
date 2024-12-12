@@ -1,3 +1,4 @@
 key.json
 env
 __pycache__
+*.bin
