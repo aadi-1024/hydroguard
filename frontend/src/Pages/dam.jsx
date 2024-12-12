@@ -6,6 +6,8 @@ import { Typography, Box, Paper, Button } from "@mui/material";
 import "./dam.css";
 import SessionsChart from "../components/sessionchart";
 import { useLocation } from "react-router-dom"; 
+import { Card, CardContent } from "@mui/material";  // Add this import at the top of your file
+
 
 const Dam = () => {
   const { damId } = useParams();
@@ -63,8 +65,9 @@ const Dam = () => {
       <Box sx={{ position: 'absolute', top: 16, right: 16 }}>
         <Button 
           variant="contained" 
-          color="primary" 
+          
           onClick={handleNavigate}
+          sx={{backgroundColor:'#274C77'}}
         >
           Go to Cordid
         </Button>
@@ -148,33 +151,35 @@ const Dam = () => {
 
       <Box sx={{ padding: 2 }}>
         {/* Display results if they exist */}
-        {processData && (
-          <Card sx={{ boxShadow: 3, borderRadius: 2, padding: 3 }}>
-            <CardContent>
-              <Typography variant="h6" sx={{ color: "#274C77", marginBottom: 2 }}>
-                Results from /crops/process:
-              </Typography>
+        {processData && processData.data ? (
+  <Card sx={{ boxShadow: 3, borderRadius: 2, padding: 3 ,width:'50vw'}}>
+    <CardContent>
+      <Typography variant="h6" sx={{ color: "#274C77", marginBottom: 2 }}>
+        Results from /crops/process:
+      </Typography>
+      <Box sx={{ marginTop: 2 }}>
+        <Typography variant="body1" sx={{ color: "#274C77" }}>
+          <strong>Water Requirement:</strong> {processData.data?.crop_water_requirement}
+        </Typography>
+        <Typography variant="body1" sx={{ color: "#274C77" }}>
+          <strong>Water Configuration:</strong> {processData.data?.water_given_config}
+        </Typography>
+        <Typography variant="body1" sx={{ color: "#274C77" }}>
+          <strong>Optimal Water Usage:</strong> {processData.data?.optimal_water_usage}
+        </Typography>
+        <Typography variant="body1" sx={{ color: "#274C77" }}>
+          <strong>Suggestions:</strong> {processData.data?.suggestions}
+        </Typography>
+        <Typography variant="body1" sx={{ color: "#274C77" }}>
+          <strong>Configuration Error:</strong> {processData.data?.config_errors}
+        </Typography>
+      </Box>
+    </CardContent>
+  </Card>
+) : (
+  <Typography>No crop process data available.</Typography>
+)}
 
-              <Box sx={{ marginTop: 2 }}>
-                <Typography variant="body1" sx={{ color: "#274C77" }}>
-                  <strong>Water Requirement:</strong> {processData.data?.crop_water_requirement}
-                </Typography>
-                <Typography variant="body1" sx={{ color: "#274C77" }}>
-                  <strong>Water Configuration:</strong> {processData.data?.water_given_config}
-                </Typography>
-                <Typography variant="body1" sx={{ color: "#274C77" }}>
-                  <strong>Optimal Water Usage:</strong> {processData.data?.optimal_water_usage}
-                </Typography>
-                <Typography variant="body1" sx={{ color: "#274C77" }}>
-                  <strong>Suggestions:</strong> {processData.data?.suggestions}
-                </Typography>
-                <Typography variant="body1" sx={{ color: "#274C77" }}>
-                  <strong>Configuration Error:</strong> {processData.data?.config_errors}
-                </Typography>
-              </Box>
-            </CardContent>
-          </Card>
-        )}
       </Box>
     </Box>
   );

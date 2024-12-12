@@ -1,26 +1,36 @@
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Box, Typography, Card, CardContent, Button, CircularProgress, TextField, MenuItem, Select, InputLabel, FormControl } from '@mui/material';
 
 const Cordinates = () => {
   const { damId } = useParams();
+  const navigate = useNavigate(); // useNavigate hook for navigation
   const [data, setData] = useState(null);
   const [processData, setProcessData] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [cropType, setCropType] = useState('wheat');
-  const [irrigationType, setIrrigationType] = useState('drip');
-  const [landCover, setLandCover] = useState('');
-  const [rain, setRain] = useState(''); // state for rainfall input
+  const [crops, setCrops] = useState([{
+    crop_type: 'wheat',
+    irrigation_type: 'drip',
+    land_cover: '',
+    rain: ''
+  }]);
+
+  // Shared inputs
+  const [soilType, setSoilType] = useState('');
+  const [rain, setRain] = useState('');
+  const [canalArea, setCanalArea] = useState('');
+  const [depth, setDepth] = useState('');
+  const [qe, setQe] = useState('');
+  const [canalType, setCanalType] = useState('');
 
   useEffect(() => {
     const handleLoad = async () => {
       try {
-        const initResponse = await axios.post('http://127.0.0.1:8080/crops/init',{
-          damId:damId
+        const initResponse = await axios.post('http://127.0.0.1:8080/crops/init', {
+          damId: damId
         });
-
         setData(initResponse.data);
       } catch (error) {
         setError(error);
@@ -28,6 +38,8 @@ const Cordinates = () => {
         setLoading(false);
       }
     };
+
+    console.log(damId)
 
     if (damId) {
       handleLoad();
@@ -37,23 +49,21 @@ const Cordinates = () => {
   const handleProcessSubmit = async () => {
     try {
       setLoading(true);
-     
       const processPayload = {
-        token: data?.data?.token,
-        rain: parseFloat(rain), 
-        crops: [
-          {
-            crop_type: cropType,
-            irrigation_type: irrigationType,
-            land_cover: parseFloat(landCover)
-          }
-        ]
+        Token: data?.data?.token,
+        Rain: parseFloat(rain),
+        SoilType: soilType,
+        CanalArea: parseFloat(canalArea),
+        Depth: parseFloat(depth),
+        Qe: parseFloat(qe),
+        CanalType: canalType,
+        crops: crops.map(crop => ({
+          CropType: crop.crop_type,
+          IrrigationType: crop.irrigation_type,
+          LandCover: crop.land_cover,
+        }))
       };
 
-      // Log the payload to ensure it's correct
-      console.log('Process Payload:', processPayload);
-
-      // Sending the request to /crops/process
       const processResponse = await axios.post('http://127.0.0.1:8080/crops/process', processPayload, {
         headers: {
           'Content-Type': 'application/json'
@@ -61,12 +71,26 @@ const Cordinates = () => {
       });
 
       setProcessData(processResponse.data);
+
+      // Navigate to the same route with process data as state
+      navigate(`/dam/${damId}`, { state: { processData: processResponse.data } });
+
     } catch (error) {
       setError(error);
       console.error('Error during processing:', error);
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleAddCrop = () => {
+    setCrops([...crops, { crop_type: 'wheat', irrigation_type: 'drip', land_cover: '', rain: '' }]);
+  };
+
+  const handleChangeCrop = (index, field, value) => {
+    const newCrops = [...crops];
+    newCrops[index][field] = value;
+    setCrops(newCrops);
   };
 
   if (error) {
@@ -104,120 +128,134 @@ const Cordinates = () => {
             {data && (
               <Card sx={{ boxShadow: 3, borderRadius: 2, padding: 3, marginBottom: 2 }}>
                 <CardContent>
-                  <Box >
-                    <Typography variant="body1" sx={{ color: '#274C77', margin:'10px' }}>
+                  <Box>
+                    <Typography variant="body1" sx={{ color: '#274C77', margin: '10px' }}>
                       <strong>Area:</strong> {data.data?.area}
                     </Typography>
-                    <Typography variant="body1" sx={{ color: '#274C77',margin:'10px' }}>
+                    <Typography variant="body1" sx={{ color: '#274C77', margin: '10px' }}>
                       <strong>Token:</strong> {data.data?.token}
                     </Typography>
-                    
                   </Box>
                 </CardContent>
               </Card>
             )}
 
+            {/* Shared Inputs */}
             <Box sx={{ marginBottom: 2 }}>
-              <FormControl fullWidth sx={{ marginBottom: 2 }}>
-                <InputLabel id="crop-type-label">Crop Type</InputLabel>
-                <Select
-                  labelId="crop-type-label"
-                  value={cropType}
-                  onChange={(e) => setCropType(e.target.value)}
-                  label="Crop Type"
-                >
-                  <MenuItem value="wheat">Wheat</MenuItem>
-                  <MenuItem value="rice">Rice</MenuItem>
-                  <MenuItem value="corn">Corn</MenuItem>
-                  <MenuItem value="barley">Barley</MenuItem>
-                  <MenuItem value="millet">Millet</MenuItem>
-                  <MenuItem value="potato">Potato</MenuItem>
-                  <MenuItem value="cotton">Cotton</MenuItem>
-                  <MenuItem value="sugarcane">Sugarcane</MenuItem>
-                </Select>
-              </FormControl>
-
-              <FormControl fullWidth sx={{ marginBottom: 2 }}>
-                <InputLabel id="irrigation-type-label">Irrigation Type</InputLabel>
-                <Select
-                  labelId="irrigation-type-label"
-                  value={irrigationType}
-                  onChange={(e) => setIrrigationType(e.target.value)}
-                  label="Irrigation Type"
-                >
-                  <MenuItem value="drip">Drip</MenuItem>
-                  <MenuItem value="flood">Flood</MenuItem>
-                  <MenuItem value="sprinkler">Sprinkler</MenuItem>
-                </Select>
-              </FormControl>
-
               <TextField
                 fullWidth
-                label="Land Cover"
-                type="number"
-                value={landCover}
-                onChange={(e) => setLandCover(e.target.value)}
+                label="Soil Type"
+                value={soilType}
+                onChange={(e) => setSoilType(e.target.value)}
                 sx={{ marginBottom: 2 }}
               />
-
               <TextField
                 fullWidth
-                label="Rain (mm)"
+                label="Rain"
                 type="number"
                 value={rain}
                 onChange={(e) => setRain(e.target.value)}
                 sx={{ marginBottom: 2 }}
               />
-
-              <Button
-                variant="contained"
-                color="primary"
-                sx={{ padding: '10px 20px', borderRadius: 3, bgcolor: '#274C77' }}
-                onClick={handleProcessSubmit}
-              >
-                Submit
-              </Button>
+              <TextField
+                fullWidth
+                label="Canal Area"
+                type="number"
+                value={canalArea}
+                onChange={(e) => setCanalArea(e.target.value)}
+                sx={{ marginBottom: 2 }}
+              />
+              <TextField
+                fullWidth
+                label="Depth"
+                type="number"
+                value={depth}
+                onChange={(e) => setDepth(e.target.value)}
+                sx={{ marginBottom: 2 }}
+              />
+              <TextField
+                fullWidth
+                label="Qe"
+                type="number"
+                value={qe}
+                onChange={(e) => setQe(e.target.value)}
+                sx={{ marginBottom: 2 }}
+              />
+              <TextField
+                fullWidth
+                label="Canal Type"
+                value={canalType}
+                onChange={(e) => setCanalType(e.target.value)}
+                sx={{ marginBottom: 2 }}
+              />
             </Box>
 
-            {/* Display results from /crops/process */}
-            {processData && (
-              <Card sx={{ boxShadow: 3, borderRadius: 2, padding: 3 }}>
-                <CardContent>
-                  <Typography variant="h6" sx={{ color: '#274C77', marginBottom: 2 }}>
-                    Results from /crops/process:
-                  </Typography>
+            {/* Form for multiple crops */}
+            {crops.map((crop, index) => (
+              <Box sx={{ marginBottom: 2 }} key={index}>
+                <FormControl fullWidth sx={{ marginBottom: 2 }}>
+                  <InputLabel id={`crop-type-label-${index}`}>Crop Type</InputLabel>
+                  <Select
+                    labelId={`crop-type-label-${index}`}
+                    value={crop.crop_type}
+                    onChange={(e) => handleChangeCrop(index, 'crop_type', e.target.value)}
+                    label="Crop Type"
+                  >
+                    <MenuItem value="wheat">Wheat</MenuItem>
+                    <MenuItem value="rice">Rice</MenuItem>
+                    <MenuItem value="corn">Corn</MenuItem>
+                    <MenuItem value="barley">Barley</MenuItem>
+                    <MenuItem value="millet">Millet</MenuItem>
+                    <MenuItem value="potato">Potato</MenuItem>
+                    <MenuItem value="cotton">Cotton</MenuItem>
+                    <MenuItem value="sugarcane">Sugarcane</MenuItem>
+                  </Select>
+                </FormControl>
 
-                  <Box sx={{ marginTop: 2 }}>
-                    <Typography variant="body1" sx={{ color: '#274C77' }}>
-                      <strong>Water Requirement:</strong> {processData.data?.crop_water_requirement}
-                    </Typography>
-                    <Typography variant="body1" sx={{ color: '#274C77' }}>
-                      <strong>Water Configuration:</strong> {processData.data?.water_given_config}
-                    </Typography>
-                    <Typography variant="body1" sx={{ color: '#274C77' }}>
-                      <strong>Optimal Water Usage:</strong> {processData.data?.optimal_water_usage}
-                    </Typography>
-                    <Typography variant="body1" sx={{ color: '#274C77' }}>
-                      <strong>Suggestions:</strong> {processData.data?.suggestions}
-                    </Typography>
-                    <Typography variant="body1" sx={{ color: '#274C77' }}>
-                      <strong>Configuration Error:</strong> {processData.data?.config_errors}
-                    </Typography>
-                  </Box>
-                </CardContent>
-              </Card>
-            )}
+                <FormControl fullWidth sx={{ marginBottom: 2 }}>
+                  <InputLabel id={`irrigation-type-label-${index}`}>Irrigation Type</InputLabel>
+                  <Select
+                    labelId={`irrigation-type-label-${index}`}
+                    value={crop.irrigation_type}
+                    onChange={(e) => handleChangeCrop(index, 'irrigation_type', e.target.value)}
+                    label="Irrigation Type"
+                  >
+                    <MenuItem value="drip">Drip</MenuItem>
+                    <MenuItem value="flood">Flood</MenuItem>
+                    <MenuItem value="sprinkler">Sprinkler</MenuItem>
+                  </Select>
+                </FormControl>
+
+                <TextField
+                  fullWidth
+                  label="Crop Land Cover"
+                  type="number"
+                  value={crop.land_cover}
+                  onChange={(e) => handleChangeCrop(index, 'land_cover', e.target.value)}
+                  sx={{ marginBottom: 2 }}
+                />
+              </Box>
+            ))}
+
+            <Button
+              variant="contained"
+              color="primary"
+              sx={{ padding: '10px 20px', borderRadius: 3, bgcolor: '#274C77', marginBottom: 2 }}
+              onClick={handleAddCrop}
+            >
+              + Add Crop
+            </Button>
+
+            <Button
+              variant="contained"
+              color="primary"
+              sx={{ padding: '10px 20px', borderRadius: 3, bgcolor: '#274C77', marginBottom: 2, marginLeft: 2 }}
+              onClick={handleProcessSubmit}
+            >
+              Submit
+            </Button>
           </>
         )}
-
-        <Button
-          variant="contained"
-          color="primary"
-          sx={{ marginTop: 3, padding: '10px 20px', borderRadius: 3, display: 'block', margin: '20px auto', bgcolor: '#274C77' }}
-          onClick={() => window.history.back()}
-        >
-          Go Back
-        </Button>
       </Box>
     </Box>
   );

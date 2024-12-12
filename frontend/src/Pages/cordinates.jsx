@@ -12,7 +12,7 @@ const Cordinates = () => {
   const [cropType, setCropType] = useState('wheat');
   const [irrigationType, setIrrigationType] = useState('drip');
   const [landCover, setLandCover] = useState('');
-  const [rain, setRain] = useState(''); // state for rainfall input
+  const [rain, setRain] = useState(''); 
 
   useEffect(() => {
     const handleLoad = async () => {
@@ -28,14 +28,18 @@ const Cordinates = () => {
           }))
         };
 
+        console.log('Initial Payload:', payload); // Log the payload to ensure it's correct
+
         const initResponse = await axios.post('http://127.0.0.1:8080/crops/init', payload, {
           headers: {
             'Content-Type': 'application/json'
           }
         });
 
+        console.log('Initial Response:', initResponse.data); // Log the response from the server
         setData(initResponse.data);
       } catch (error) {
+        console.error('Error during initial load:', error);
         setError(error);
       } finally {
         setLoading(false);
@@ -50,43 +54,41 @@ const Cordinates = () => {
   const handleProcessSubmit = async () => {
     try {
       setLoading(true);
-      // Construct process payload
       const processPayload = {
         token: data?.data?.token,
-        rain: parseFloat(rain), // Use the rain value from the state
+        rain: parseFloat(rain) || 0, // Ensure it's a number
         crops: [
           {
             crop_type: cropType,
             irrigation_type: irrigationType,
-            land_cover: parseFloat(landCover)
+            land_cover: parseFloat(landCover) || 0, // Ensure it's a number
           }
         ]
       };
-
-      // Log the payload to ensure it's correct
-      console.log('Process Payload:', processPayload);
-
-      // Sending the request to /crops/process
+  
+      console.log('Process Payload:', processPayload); // Log the payload
+  
       const processResponse = await axios.post('http://127.0.0.1:8080/crops/process', processPayload, {
         headers: {
           'Content-Type': 'application/json'
         }
       });
-
+  
       setProcessData(processResponse.data);
     } catch (error) {
       setError(error);
-      console.error('Error during processing:', error);
+      console.error('Error during processing:', error.response ? error.response.data : error.message);
     } finally {
       setLoading(false);
     }
   };
+  
 
   if (error) {
     return (
       <Box sx={{ padding: 2 }}>
         <Typography variant="h6" color="error">
-          Error: {error?.response?.data?.message || error.message}
+          Error: {error?.response?.data?.message || error?.message || 'Unknown error'}
         </Typography>
       </Box>
     );
@@ -118,13 +120,9 @@ const Cordinates = () => {
               <Card sx={{ boxShadow: 3, borderRadius: 2, padding: 3, marginBottom: 2 }}>
                 <CardContent>
                   <Box >
-                    <Typography variant="body1" sx={{ color: '#274C77', margin:'10px' }}>
+                    <Typography variant="body1" sx={{ color: '#274C77' }}>
                       <strong>Area:</strong> {data.data?.area}
                     </Typography>
-                    <Typography variant="body1" sx={{ color: '#274C77',margin:'10px' }}>
-                      <strong>Token:</strong> {data.data?.token}
-                    </Typography>
-                    
                   </Box>
                 </CardContent>
               </Card>
@@ -192,7 +190,6 @@ const Cordinates = () => {
               </Button>
             </Box>
 
-            {/* Display results from /crops/process */}
             {processData && (
               <Card sx={{ boxShadow: 3, borderRadius: 2, padding: 3 }}>
                 <CardContent>
