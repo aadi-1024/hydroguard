@@ -5,7 +5,7 @@ import "time"
 type CropAnalysis struct {
 	Id                   int       `json:"id" gorm:"primaryKey"`
 	DamId                int       `json:"dam_id"`
-	CreatedAt            time.Time `json:"created_at" gorm:"default"`
+	CreatedAt            time.Time `json:"created_at"`
 	CropWaterRequirement float64   `json:"crop_water_requirement"`
 	WaterGivenConfig     float64   `json:"water_given_config"`
 	SeepageLosses        float64   `json:"seepage_losses"`

@@ -57,7 +57,7 @@ function App() {
       element: <><Sidebar/><Cords/><Right/> <MyChatBot/></>
     },
     {
-      path:'/cordid/:id',
+      path:'/cordid/:damId',
       element: <><Sidebar/><Cordid/><Right/> <MyChatBot/></>
     },
     {
