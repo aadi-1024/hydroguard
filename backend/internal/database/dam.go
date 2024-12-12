@@ -26,7 +26,7 @@ func (d *Database) GetAllDams(ctx context.Context) ([]models.Dam, error) {
 	defer cancel()
 
 	data := make([]models.Dam, 0)
-	err := d.conn.WithContext(ctx).Model(&models.Dam{}).Preload("Coordinates").Find(&data).Error
+	err := d.conn.WithContext(ctx).Model(&models.Dam{}).Preload("CommandCoordinates").Preload("Coordinates").Find(&data).Error
 
 	return data, err
 }
