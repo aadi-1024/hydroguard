@@ -87,11 +87,6 @@ const Right = () => {
           ))}
         </>
       </div>
-      <div className="chatbot">
-        <h1 className="txt">HydroGaurd AI ChatBuddy</h1>
-        <p className="stxt">#Ask Your Doubts</p>
-        <img className="chatimg" src={chatbotImg} alt="Bot" />
-      </div>
     </div>
   );
 };
