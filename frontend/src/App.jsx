@@ -26,7 +26,7 @@ function App() {
     {
       path: '/contact',
       element: (
-        <> <ContactUsForm/> </>
+        <> <Sidebar/> <ContactUsForm/> </>
       ),
     },
     {

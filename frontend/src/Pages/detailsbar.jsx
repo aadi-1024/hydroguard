@@ -107,12 +107,12 @@ const DetailsBar = () => {
       <div>
         <ContactsWrapper href="tel:+233543201893">
           <Icon.Phone size={15} color="rgb(252, 113, 137)" />
-          <ContactText>+233543201893</ContactText>
+          <ContactText>+91 79018 80904</ContactText>
         </ContactsWrapper>
 
         <ContactsWrapper href="mailto:aljay3334@gmail.com">
           <Icon.Mail size={15} color="rgb(252, 113, 137)" />
-          <ContactText>aljay3334@gmail.com</ContactText>
+          <ContactText>athakur_be22@thapar.edu</ContactText>
         </ContactsWrapper>
       </div>
 
@@ -122,13 +122,10 @@ const DetailsBar = () => {
       </div>
 
       <SocialsWrapper>
-        <SocialIconWrapper href="https://www.facebook.com/profile.php?id=100021937291259">
-          <Icon.Facebook color="#fff" size={20} />
-        </SocialIconWrapper>
-        <SocialIconWrapper href="https://www.instagram.com/_allenjones/">
+        <SocialIconWrapper href="https://www.instagram.com/sarthaksri017/">
           <Icon.Instagram color="#fff" size={20} />
         </SocialIconWrapper>
-        <SocialIconWrapper href="https://www.linkedin.com/in/allen-jones-b799b7171/">
+        <SocialIconWrapper href="https://www.linkedin.com/in/sarthaksri017/">
           <Icon.Linkedin color="#fff" size={20} />
         </SocialIconWrapper>
       </SocialsWrapper>
