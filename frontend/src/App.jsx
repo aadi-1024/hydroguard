@@ -11,6 +11,7 @@ import Right from './Pages/right.jsx'
 import Dam from './Pages/dam.jsx'
 import Litter from './Pages/litter.jsx'
 import Prediction from './Pages/prediction.jsx'
+import Cords from './Pages/cordinates'
 
 function App() {
   const router = createBrowserRouter([
@@ -29,7 +30,7 @@ function App() {
     {
       path: '/dam/:damId',
       element: (
-        <> <Sidebar/> <Dam/><Right/></>
+        <> <Sidebar/> <Dam/><Right/> <MyChatBot/></>
       ),
     },
     {
@@ -38,11 +39,15 @@ function App() {
     },
     {
       path:'/prediction',
-      element: <><Sidebar/><Prediction/><Right/></>
+      element: <><Sidebar/><Prediction/><Right/><MyChatBot/></>
     },
     {
       path:'/right',
       element: <Right/>
+    },
+    {
+      path:'/polygon/:coordinate',
+      element: <Cords/>
     },
     {
       path:'/home',

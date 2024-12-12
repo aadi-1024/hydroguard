@@ -5,6 +5,7 @@ import axios from "axios";
 import { Paper, Typography } from "@mui/material";
 import { Grid2, Button } from "@mui/material";
 
+
 const Right = () => {
   const [notifications, setNotifications] = useState([]);
 

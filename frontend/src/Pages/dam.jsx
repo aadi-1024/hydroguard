@@ -1,16 +1,16 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
-import { Typography, Box, Paper, Grid2 } from "@mui/material";
+import { Typography, Box, Paper} from "@mui/material";
 import "./dam.css";
 import SessionsChart from "../components/sessionchart";
-import { Grid } from "@mui/system";
-import GovindSagar from "../assets/govindsagar.jpg"
+
+import GovindSagar from "../assets/givind_sagar.jpeg"
 
 const Dam = () => {
   const { damId } = useParams();
   const [damData, setDamData] = useState(null);
-  const [error, setError] = useState(null);
+  // const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const [waterCover, setWaterCover] = useState(null);
   const [volume, setVolume] = useState(null);
@@ -41,7 +41,7 @@ const Dam = () => {
       setWaterCover(x);
     } catch (error) {
       console.error("Error fetching data:", error);
-      setError("Failed to load data");
+      // setError("Failed to load data");
     } finally {
       setLoading(false);
     }

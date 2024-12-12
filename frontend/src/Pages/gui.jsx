@@ -80,12 +80,12 @@ const Gui = () => {
       const coordinates = latLngs.map((latLng) => [latLng.lat, latLng.lng]);
       setPolygonCoordinates(coordinates);
       setPolygonSelected(true);
-      console.log("Polygon Coordinates:", coordinates);
+      // console.log("Polygon Coordinates:", coordinates);
     }
   };
 
   const handleNavigate = () => {
-    navigate(`/polygon-view?coordinates=${encodeURIComponent(JSON.stringify(polygonCoordinates))}`);
+    navigate(`/polygon/${encodeURIComponent(JSON.stringify(polygonCoordinates))}`);
   };
 
   return (
