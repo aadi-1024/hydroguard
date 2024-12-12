@@ -47,7 +47,7 @@ function App() {
     },
     {
       path:'/polygon/:coordinates',
-      element: <Cords/>
+      element: <><Sidebar/><Cords/><Right/> <MyChatBot/></>
     },
     {
       path:'/home',
