@@ -35,22 +35,16 @@ function Sidebar() {
               <ListItemText primary="Home" />
             </ListItem>
           </Link>
-          <Link to="/about" className="link">
+          <Link to="/" className="link">
             <ListItem button>
               <Info sx={{ fontSize: '2rem', marginRight: 2 }} />
               <ListItemText primary="Dashboard" />
             </ListItem>
           </Link>
-          <Link to="/profile" className="link">
-            <ListItem button>
-              <AccountBox sx={{ fontSize: '2rem', marginRight: 2 }} />
-              <ListItemText primary="Profile" />
-            </ListItem>
-          </Link>
           <Link to="/contact" className="link">
             <ListItem button>
               <ContactMail sx={{ fontSize: '2rem', marginRight: 2 }} />
-              <ListItemText primary="Contact" />
+              <ListItemText primary="Contact Us" />
             </ListItem>
           </Link>
         </List>

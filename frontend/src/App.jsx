@@ -12,6 +12,7 @@ import Dam from './Pages/dam.jsx'
 import Litter from './Pages/litter.jsx'
 import Prediction from './Pages/prediction.jsx'
 import Cords from './Pages/cordinates'
+import ContactUsForm from './Pages/contact.jsx';
 import Cordid from './Pages/cordid.jsx'
 function App() {
   const router = createBrowserRouter([
@@ -19,6 +20,12 @@ function App() {
       path: '/',
       element: (
         <> <Sidebar/> <Map/> <Right/> <MyChatBot/></>
+      ),
+    },
+    {
+      path: '/contact',
+      element: (
+        <> <ContactUsForm/> </>
       ),
     },
     {
