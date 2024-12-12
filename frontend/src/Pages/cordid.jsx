@@ -29,7 +29,7 @@ const Cordinates = () => {
     const handleLoad = async () => {
       try {
         const initResponse = await axios.post('http://127.0.0.1:8080/crops/init', {
-          damId: damId
+          dam_id: Number(damId)
         });
         setData(initResponse.data);
       } catch (error) {
@@ -50,17 +50,12 @@ const Cordinates = () => {
     try {
       setLoading(true);
       const processPayload = {
-        Token: data?.data?.token,
-        Rain: parseFloat(rain),
-        SoilType: soilType,
-        CanalArea: parseFloat(canalArea),
-        Depth: parseFloat(depth),
-        Qe: parseFloat(qe),
-        CanalType: canalType,
+        token: data?.data?.token,
+        rain: parseFloat(rain),
         crops: crops.map(crop => ({
-          CropType: crop.crop_type,
-          IrrigationType: crop.irrigation_type,
-          LandCover: crop.land_cover,
+          crop_type: crop.crop_type,
+          irrigation_type: crop.irrigation_type,
+          land_cover: Number(crop.land_cover),
         }))
       };
 
@@ -142,52 +137,51 @@ const Cordinates = () => {
 
             {/* Shared Inputs */}
             <Box sx={{ marginBottom: 2 }}>
-              <TextField
+              {/* <TextField
                 fullWidth
                 label="Soil Type"
                 value={soilType}
                 onChange={(e) => setSoilType(e.target.value)}
                 sx={{ marginBottom: 2 }}
-              />
+              /> */}
               <TextField
                 fullWidth
                 label="Rain"
                 type="number"
                 value={rain}
                 onChange={(e) => setRain(e.target.value)}
-                sx={{ marginBottom: 2 }}
-              />
-              <TextField
+                sx={{ marginBottom: 2 }}/>
+              {/* <TextField
                 fullWidth
                 label="Canal Area"
                 type="number"
                 value={canalArea}
                 onChange={(e) => setCanalArea(e.target.value)}
                 sx={{ marginBottom: 2 }}
-              />
-              <TextField
+              /> */}
+              {/* <TextField
                 fullWidth
                 label="Depth"
                 type="number"
                 value={depth}
                 onChange={(e) => setDepth(e.target.value)}
                 sx={{ marginBottom: 2 }}
-              />
-              <TextField
+              /> */}
+              {/* <TextField
                 fullWidth
                 label="Qe"
                 type="number"
                 value={qe}
                 onChange={(e) => setQe(e.target.value)}
                 sx={{ marginBottom: 2 }}
-              />
-              <TextField
+              /> */}
+              {/* <TextField
                 fullWidth
                 label="Canal Type"
                 value={canalType}
                 onChange={(e) => setCanalType(e.target.value)}
                 sx={{ marginBottom: 2 }}
-              />
+              /> */}
             </Box>
 
             {/* Form for multiple crops */}

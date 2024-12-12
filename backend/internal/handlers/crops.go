@@ -7,60 +7,58 @@ import (
 	"hydroguard/internal/database"
 	"hydroguard/internal/models"
 	"io"
+	"log"
 	"math/rand/v2"
 	"net/http"
 	"strconv"
 	"time"
-
-	"encoding/csv"
-	"os"
 
 	"github.com/bradfitz/gomemcache/memcache"
 	"github.com/labstack/echo/v4"
 )
 
 // Function to read C value from c-values.csv
-func getCValue(soilType string) (float64, error) {
-	file, err := os.Open("./c-value.csv")
-	if err != nil {
-		return 0, fmt.Errorf("failed to open c-values.csv: %v", err)
-	}
-	defer file.Close()
+// func getCValue(soilType string) (float64, error) {
+// 	file, err := os.Open("./c-value.csv")
+// 	if err != nil {
+// 		return 0, fmt.Errorf("failed to open c-values.csv: %v", err)
+// 	}
+// 	defer file.Close()
 
-	reader := csv.NewReader(file)
-	rows, err := reader.ReadAll()
-	if err != nil {
-		return 0, fmt.Errorf("failed to read c-values.csv: %v", err)
-	}
+// 	reader := csv.NewReader(file)
+// 	rows, err := reader.ReadAll()
+// 	if err != nil {
+// 		return 0, fmt.Errorf("failed to read c-values.csv: %v", err)
+// 	}
 
-	for _, row := range rows {
-		if row[0] == soilType {
-			return strconv.ParseFloat(row[1], 64)
-		}
-	}
+// 	for _, row := range rows {
+// 		if row[0] == soilType {
+// 			return strconv.ParseFloat(row[1], 64)
+// 		}
+// 	}
 
-	return 0, fmt.Errorf("soil type %s not found in c-values.csv", soilType)
-}
+// 	return 0, fmt.Errorf("soil type %s not found in c-values.csv", soilType)
+// }
 
-// Function to calculate losses based on canal type
-func calculateCanalLosses(totalLoss float64, canalType string) float64 {
-	maxFlow := 1.515 * totalLoss
-	var losses float64
+// // Function to calculate losses based on canal type
+// func calculateCanalLosses(totalLoss float64, canalType string) float64 {
+// 	maxFlow := 1.515 * totalLoss
+// 	var losses float64
 
-	switch canalType {
-	case "unlined":
-		losses = 0.66 * maxFlow
-	case "lined":
-		losses = 0.35 * maxFlow
-	case "piped":
-		losses = 0.1 * maxFlow
-	default:
-		fmt.Println("Invalid canal type")
-		return 0
-	}
+// 	switch canalType {
+// 	case "unlined":
+// 		losses = 0.66 * maxFlow
+// 	case "lined":
+// 		losses = 0.35 * maxFlow
+// 	case "piped":
+// 		losses = 0.1 * maxFlow
+// 	default:
+// 		fmt.Println("Invalid canal type")
+// 		return 0
+// 	}
 
-	return losses
-}
+// 	return losses
+// }
 
 func InitiateRequest(db database.Database, cache database.Cache) echo.HandlerFunc {
 	return func(c echo.Context) error {
@@ -163,15 +161,15 @@ func ProcessRequest(db database.Database, cache database.Cache) echo.HandlerFunc
 		}
 
 		type req struct {
-			Token         string  `json:"token"`
-			Rain          float32 `json:"rain"`
-			Crops         []crop  `json:"crops"`
-			SoilType      string  `json:"soil_type"`
-			CanalArea     float64 `json:"canal_area"`      //mill sq. feet
-			Depth         float64 `json:"depth"`           //feet
-			Qe            float64 `json:"qe"`              //length of discharge per unit length
-			LengthOfCanal float64 `json:"length_of_canal"` //metres
-			CanalType     string  `json:"canal_type"`
+			Token string  `json:"token"`
+			Rain  float32 `json:"rain"`
+			Crops []crop  `json:"crops"`
+			// SoilType      string  `json:"soil_type"`
+			// CanalArea     float64 `json:"canal_area"`      //mill sq. feet
+			// Depth         float64 `json:"depth"`           //feet
+			// Qe            float64 `json:"qe"`              //length of discharge per unit length
+			// LengthOfCanal float64 `json:"length_of_canal"` //metres
+			// CanalType     string  `json:"canal_type"`
 		}
 
 		reqPayload := req{}
@@ -179,6 +177,8 @@ func ProcessRequest(db database.Database, cache database.Cache) echo.HandlerFunc
 			res.Message = err.Error()
 			return c.JSON(http.StatusBadRequest, res)
 		}
+
+		log.Println(reqPayload)
 
 		item, err := cache.Conn.Get(reqPayload.Token)
 		if err != nil {
@@ -241,28 +241,28 @@ func ProcessRequest(db database.Database, cache database.Cache) echo.HandlerFunc
 		}
 
 		// Seepage and evaporation calculations
-		cValue, err := getCValue(reqPayload.SoilType)
-		if err != nil {
-			res.Message = fmt.Sprintf("Error calculating seepage: %v", err)
-			return c.JSON(http.StatusInternalServerError, res)
-		}
-		seepageLosses := cValue * reqPayload.CanalArea * reqPayload.Depth * 35.31
-		evaporationDischarge := reqPayload.Qe * reqPayload.LengthOfCanal
+		// cValue, err := getCValue(reqPayload.SoilType)
+		// if err != nil {
+		// 	res.Message = fmt.Sprintf("Error calculating seepage: %v", err)
+		// 	return c.JSON(http.StatusInternalServerError, res)
+		// }
+		// seepageLosses := cValue * reqPayload.CanalArea * reqPayload.Depth * 35.31
+		// evaporationDischarge := reqPayload.Qe * reqPayload.LengthOfCanal
 
-		// Canal loss calculations
-		canalLosses := calculateCanalLosses(evaporationDischarge+seepageLosses, reqPayload.CanalType)
+		// // Canal loss calculations
+		// canalLosses := calculateCanalLosses(evaporationDischarge+seepageLosses, reqPayload.CanalType)
 
 		data := models.CropAnalysis{
 			DamId:                int(dat["id"].(float64)),
 			CreatedAt:            time.Now(),
 			CropWaterRequirement: waterReq,
-			SeepageLosses:        seepageLosses,
-			EvaporationDischarge: evaporationDischarge,
-			CanalLosses:          canalLosses,
-			OptimalWaterUsage:    optimalWaterUsage,
-			WaterGivenConfig:     waterGivenConfig,
-			Suggestions:          msg,
-			ConfigErrors:         msg2,
+			// SeepageLosses:        seepageLosses,
+			// EvaporationDischarge: evaporationDischarge,
+			// CanalLosses:          canalLosses,
+			OptimalWaterUsage: optimalWaterUsage,
+			WaterGivenConfig:  waterGivenConfig,
+			Suggestions:       msg,
+			ConfigErrors:      msg2,
 		}
 
 		data, err = db.CreateCropAnalysis(c.Request().Context(), data)
@@ -318,9 +318,6 @@ func InitiateRequestOld(db database.Database, cache database.Cache) echo.Handler
 
 		//replace with userid later
 		cache.Conn.Add(&memcache.Item{
-			Key:        "uid",
-			Value:      []byte(strconv.Itoa(num)),
-			Expiration: 300,
 			Key:        strconv.Itoa(num),
 			Value:      []byte(strconv.FormatFloat(area, 'f', 6, 64)),
 			Expiration: 1800,
@@ -328,7 +325,6 @@ func InitiateRequestOld(db database.Database, cache database.Cache) echo.Handler
 
 		final := map[string]any{
 			"area":    area,
-			"token":   num,
 			"token":   strconv.Itoa(num),
 			"weather": "filllater",
 		}
