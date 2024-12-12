@@ -14,15 +14,17 @@
   } */
   
   .Boxy {
+    
     display: flex;
-    justify-content: center;
-    gap: 40px;
+    padding-left: 40%;
+    padding-right: 40%;
   }
   
   .dam-box {
     
     width: 25vw;
     height: 25vh;
+    
     background-color: rgb(255, 255, 255);
    
     border-radius: 1000px;
@@ -46,8 +48,8 @@
   /* margin-top: 5px; */
   }
   
-  .dam-box .typography-content {
-    font-size: 13px;
-    color: #274C77;
-    margin-bottom: 10px;
+  .graph1{
+    padding-left: 15%;
+    margin-right: 18%;
+
   }
