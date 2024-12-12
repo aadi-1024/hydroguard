@@ -12,7 +12,7 @@ import Dam from './Pages/dam.jsx'
 import Litter from './Pages/litter.jsx'
 import Prediction from './Pages/prediction.jsx'
 import Cords from './Pages/cordinates'
-
+import Cordid from './Pages/cordid.jsx'
 function App() {
   const router = createBrowserRouter([
     {
@@ -46,8 +46,12 @@ function App() {
       element: <Right/>
     },
     {
-      path:'/polygon/:coordinates',
+      path:'/polygon/:id',
       element: <><Sidebar/><Cords/><Right/> <MyChatBot/></>
+    },
+    {
+      path:'/cordid/:id',
+      element: <><Sidebar/><Cordid/><Right/> <MyChatBot/></>
     },
     {
       path:'/home',

@@ -12,7 +12,7 @@ const Cordinates = () => {
   const [cropType, setCropType] = useState('wheat');
   const [irrigationType, setIrrigationType] = useState('drip');
   const [landCover, setLandCover] = useState('');
-  const [rain, setRain] = useState(''); // state for rainfall input
+  const [rain, setRain] = useState(''); 
 
   useEffect(() => {
     const handleLoad = async () => {
@@ -118,13 +118,15 @@ const Cordinates = () => {
               <Card sx={{ boxShadow: 3, borderRadius: 2, padding: 3, marginBottom: 2 }}>
                 <CardContent>
                   <Box >
-                    <Typography variant="body1" sx={{ color: '#274C77', margin:'10px' }}>
+                    <Typography variant="body1" sx={{ color: '#274C77' }}>
                       <strong>Area:</strong> {data.data?.area}
                     </Typography>
-                    <Typography variant="body1" sx={{ color: '#274C77',margin:'10px' }}>
+                    {/* <Typography variant="body1" sx={{ color: '#274C77',margin:'10px' }}>
                       <strong>Token:</strong> {data.data?.token}
                     </Typography>
-                    
+                     <Typography variant="body1" sx={{ color: '#274C77',margin:'10px' }}>
+                      This token Will 
+                    </Typography> */}
                   </Box>
                 </CardContent>
               </Card>

@@ -4,7 +4,7 @@ import axios from 'axios';
 import { Box, Typography, Card, CardContent, Button, CircularProgress, TextField, MenuItem, Select, InputLabel, FormControl } from '@mui/material';
 
 const Cordinates = () => {
-  const { coordinates } = useParams();
+  const { damId } = useParams();
   const [data, setData] = useState(null);
   const [processData, setProcessData] = useState(null);
   const [error, setError] = useState(null);
@@ -17,21 +17,8 @@ const Cordinates = () => {
   useEffect(() => {
     const handleLoad = async () => {
       try {
-        setLoading(true);
-        const coordinateString = coordinates.replace(/^coordinates=/, "");
-        const coordinateArray = JSON.parse(decodeURIComponent(coordinateString));
-
-        const payload = {
-          coordinates: coordinateArray.map(coord => ({
-            latitude: coord[0],
-            longitude: coord[1]
-          }))
-        };
-
-        const initResponse = await axios.post('http://127.0.0.1:8080/crops/init', payload, {
-          headers: {
-            'Content-Type': 'application/json'
-          }
+        const initResponse = await axios.post('http://127.0.0.1:8080/crops/init',{
+          damId:damId
         });
 
         setData(initResponse.data);
@@ -42,18 +29,18 @@ const Cordinates = () => {
       }
     };
 
-    if (coordinates) {
+    if (damId) {
       handleLoad();
     }
-  }, [coordinates]);
+  }, [damId]);
 
   const handleProcessSubmit = async () => {
     try {
       setLoading(true);
-      // Construct process payload
+     
       const processPayload = {
         token: data?.data?.token,
-        rain: parseFloat(rain), // Use the rain value from the state
+        rain: parseFloat(rain), 
         crops: [
           {
             crop_type: cropType,

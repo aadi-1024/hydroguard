@@ -14,6 +14,7 @@ const Gui = () => {
   const [coordinates, setCoordinates] = useState([]);
   const [polygonCoordinates, setPolygonCoordinates] = useState([]);
   const [polygonSelected, setPolygonSelected] = useState(false);
+ 
   const worldBounds = [
     [-90, -180],
     [-90, 180],
@@ -85,9 +86,8 @@ const Gui = () => {
   };
 
   const handleNavigate = () => {
-    console.log("Polygon Coordinates:", polygonCoordinates);
+    console.log("Polygon Coordinates:", coordinates);
     navigate(`/polygon/coordinates=${encodeURIComponent(JSON.stringify(polygonCoordinates))}`);
-
     
   };
 
