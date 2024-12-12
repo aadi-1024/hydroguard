@@ -12,8 +12,8 @@ const CanalForm = () => {
     canalDepth: '',
     canalLength: '',
   });
-  
-  const [responseData, setResponseData] = useState(null); // To store the response from the backend
+
+  const [responseData, setResponseData] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
@@ -24,19 +24,30 @@ const CanalForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    
+
+    // Convert inputs to the appropriate type (e.g., float32 for numeric values)
+    const dataToSend = {
+      qe: parseFloat(canalData.qe) || undefined,
+      width: parseFloat(canalData.width) || undefined,
+      soil_type: canalData.soilType || undefined,
+      canal_area: parseFloat(canalData.canalArea) || undefined,
+      canal_type: canalData.canalType || undefined,
+      canal_depth: parseFloat(canalData.canalDepth) || undefined,
+      canal_length: parseFloat(canalData.canalLength) || undefined,
+    };
+
     try {
-      // Make the API request to the backend
-      const response = await axios.post('http://127.0.0.1:8080/canal', canalData, {
+      // Send request to backend
+      const response = await axios.post('http://127.0.0.1:8080/canal', dataToSend, {
         headers: {
           'Content-Type': 'application/json',
         },
       });
 
-      setResponseData(response.data); // Store the response data
+      setResponseData(response.data); // Store the response
     } catch (error) {
       console.error('Error submitting data:', error);
-      setResponseData({ error: 'There was an error with the request' }); // Display error message
+      setResponseData({ error: 'There was an error with the request' });
     } finally {
       setLoading(false);
     }
@@ -44,8 +55,8 @@ const CanalForm = () => {
 
   return (
     <Container maxWidth="sm">
-      <Box sx={{ padding: 1, textAlign: 'center' }}>
-        <Typography variant="h4" sx={{ marginBottom: 3 ,color:'#274C77'}}>
+      <Box sx={{ padding: 2, textAlign: 'center' }}>
+        <Typography variant="h4" sx={{ marginBottom: 3, color: '#274C77' }}>
           Canal Information
         </Typography>
 
@@ -139,7 +150,7 @@ const CanalForm = () => {
               fullWidth
               variant="contained"
               color="primary"
-              sx={{ padding: '10px 20px', borderRadius: 3 ,backgroundColor:'#274C77'}}
+              sx={{ padding: '10px 20px', borderRadius: 3, backgroundColor: '#274C77' }}
             >
               Submit
             </Button>
