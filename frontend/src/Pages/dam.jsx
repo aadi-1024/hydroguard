@@ -5,6 +5,7 @@ import { Typography, Box, Paper, Grid2 } from "@mui/material";
 import "./dam.css";
 import SessionsChart from "../components/sessionchart";
 import { Grid } from "@mui/system";
+import GovindSagar from "../assets/govindsagar.jpg"
 
 const Dam = () => {
   const { damId } = useParams();
@@ -67,7 +68,7 @@ const Dam = () => {
           {volume.length > 0 && <SessionsChart d={volume} order={volume[0] > volume[volume.length - 1] ? 'Increasing' : 'Decreasing'} h={150} w='25%' />}
           {sedimentation.length > 0 && <SessionsChart d={sedimentation} order={sedimentation[0] > sedimentation[sedimentation.length - 1] ? 'Increasing' : 'Decreasing'} h={150} w='25%' />}
           <Box className="Boxy">
-            <Paper className="dam-box" sx={{ borderRadius: "20px" }}>
+            {/* <Paper className="dam-box" sx={{ borderRadius: "20px" }}>
               <Typography className="typography-title" variant="h6">
                 Name:
               </Typography>
@@ -119,7 +120,60 @@ const Dam = () => {
               <Typography className="typography-content">
                 {damData.last_maintenance || "N/A"}
               </Typography>
+            </Paper> */}
+            <Paper  elevation ={3} className="dam-data" sx={{ padding:2, borderRadius: "20px" }}>
+            <Typography className="typography-title" variant="h6" color="navyblue" style={{ fontWeight: 'bold' }}>
+                Name:
+              </Typography>
+              <Typography className="typography-content" variant="h6">
+                {damData.name || "N/A"}
+              </Typography>
+              <Typography className="typography-title" variant="h6" color="navyblue" style={{ fontWeight: 'bold' }}>
+                Latitude:
+              </Typography>
+              <Typography className="typography-content" variant="h6">
+                {damData.latitude || "N/A"}
+              </Typography>
+              <Typography className="typography-title" variant="h6" color="navyblue" style={{ fontWeight: 'bold' }}>
+                Longitude:
+              </Typography>
+              <Typography className="typography-content" variant="h6" style={{ fontWeight: 'bold' }}>
+                {damData.longitude || "N/A"}
+              </Typography>
+              <Typography className="typography-title" variant="h6" color="navyblue" style={{ fontWeight: 'bold' }}>
+                GrossVolume:
+              </Typography>
+              <Typography className="typography-content" variant="h6">
+                {damData.gross_volume || "N/A"}
+              </Typography>
+              <Typography className="typography-title" variant="h6" color="navyblue" style={{ fontWeight: 'bold' }}>
+                Mean Depth:
+              </Typography>
+              <Typography className="typography-content" variant="h6">
+                {damData.mean_depth || "N/A"}
+              </Typography>
+              <Typography className="typography-title" variant="h6" color="navyblue" style={{ fontWeight: 'bold' }}>
+                Status:
+              </Typography>
+              <Typography className="typography-content" variant="h6">
+                {damData.status || "N/A"}
+              </Typography>
+              <Typography className="typography-title" variant="h6" color="navyblue" style={{ fontWeight: 'bold' }}>
+                Last Maintenance:
+              </Typography>
+              <Typography className="typography-content" variant="h6">
+                {damData.last_maintenance || "N/A"}
+              </Typography>
+              
             </Paper>
+            <Box>
+
+              <img src={GovindSagar} alt="Govind Sagar" style={{ height: 300,paddingLeft:20, borderRadius:20}}  />
+
+</Box>
+            
+
+            
           </Box>
         </>
       )}
